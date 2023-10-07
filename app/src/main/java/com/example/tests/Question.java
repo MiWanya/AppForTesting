@@ -1,5 +1,7 @@
 package com.example.tests;
 
+import android.widget.TextView;
+
 import java.util.List;
 
 public class Question {
@@ -46,6 +48,10 @@ public class Question {
 
     public void setCorrectAnswer(String correctAnswer){ //Задать правильный ответ
         this.correctAnswer = correctAnswer;
+    }
+
+    public void DisplayQuestionText(TextView textView, Question question){
+        textView.setText(question.questionText);
     }
 }
 

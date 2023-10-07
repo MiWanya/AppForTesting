@@ -23,87 +23,29 @@ import java.util.Random;
 
 
 public class MainTextAcrivity extends AppCompatActivity {
-
-    TextView qText = findViewById(R.id.QuestionText);
-    List<Question> questionList = new ArrayList<>();
-    int CurrentQuestion = 0;
-    int Count = questionList.size();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_text_acrivity);
 
+        // Получаем InputStream и инициализируем QuestionManager внутри onCreate.
+        InputStream inputStream;
         try {
-            // Откройте или создайте файл во внутренней памяти приложения
-            FileInputStream inputStream = openFileInput("questions.txt");
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader reader = new BufferedReader(inputStreamReader);
-
-            String line;
-            String questionText = null;
-            List<String> options = new ArrayList<>();
-            String correctAnswer = null;
-            QuestionType questionType = null;
-
-            while ((line = reader.readLine()) != null) {
-                // Разбиваем строку на части, разделенные ": "
-                String[] parts = line.split(": ");
-                if (parts.length == 2) {
-                    String key = parts[0];
-                    String value = parts[1];
-
-                    if (key.equals("Вопрос")) {
-                        questionText = value;
-                    } else if (key.equals("Ответы")) {
-                        // Разбиваем строку с вариантами ответов на отдельные варианты
-                        String[] optionsArray = value.split(", ");
-                        options = Arrays.asList(optionsArray);
-                    } else if (key.equals("Правильный ответ")) {
-                        correctAnswer = value;
-                    } else if (key.equals("Тип вопроса")) {
-                        questionType = QuestionType.valueOf(value);
-                    }
-                } else if (line.isEmpty()) {
-                    // Пустая строка разделяет вопросы
-                    if (questionText != null && !options.isEmpty() && correctAnswer != null && questionType != null) {
-                        // Создаем объект вопроса и добавляем его в коллекцию
-                        if (questionText != null && !options.isEmpty() && correctAnswer != null && questionType != null) {
-                            // Создаем объект вопроса и добавляем его в коллекцию
-                            Question question = new Question(questionText, questionType, options, correctAnswer);
-                            questionList.add(question);
-                        }
-                    }
-
-                    // Сбрасываем переменные для следующего вопроса
-                    questionText = null;
-                    options = new ArrayList<>();
-                    correctAnswer = null;
-                    questionType = null;
-                }
-            }
-
-            // Закрываем потоки
-            reader.close();
-            inputStreamReader.close();
-            inputStream.close();
+            inputStream = getAssets().open("questions.txt");
         } catch (IOException e) {
-            e.printStackTrace();
-            // Обработайте ошибку чтения файла
+            throw new RuntimeException(e);
         }
+        QuestionManager questionManager = new QuestionManager(inputStream);
+        List<Question> questions = questionManager.getQuestions();
 
-        try {
-            Question currentQuestion = questionList.get(CurrentQuestion);
+        // Находим TextView в макете.
+        TextView textView = findViewById(R.id.QuestionText);
 
-            // Установите текст текущего вопроса на TextView
-            qText.setText(currentQuestion.GetQuestionText());
-        } catch (IndexOutOfBoundsException e) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-        }
+        // Получаем первый вопрос (предположим, что он первый в списке).
+        Question question = questions.get(0);
 
+        // Получаем текст вопроса и устанавливаем его в TextView.
+        String questionText = question.GetQuestionText();
+        textView.setText(questionText);
     }
-
-
-
 }
