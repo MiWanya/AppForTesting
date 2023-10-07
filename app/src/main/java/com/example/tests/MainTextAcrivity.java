@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -18,11 +21,28 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 
 public class MainTextAcrivity extends AppCompatActivity {
+
+    int CurrentQuestion = 0;
+
+    // Метод для получения уникального варианта ответа.
+    private String getUniqueOption(List<String> options, List<Boolean> usedOptions, Random random) {
+        int index;
+        do {
+            index = random.nextInt(options.size());
+        } while (usedOptions.get(index));
+
+        // Помечаем вариант ответа как использованный.
+        usedOptions.set(index, true);
+
+        return options.get(index);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,11 +61,34 @@ public class MainTextAcrivity extends AppCompatActivity {
         // Находим TextView в макете.
         TextView textView = findViewById(R.id.QuestionText);
 
+        // Находим RelativeLayout с идентификатором "Answers" в макете.
+        RelativeLayout answersLayout = findViewById(R.id.Answers);
+
         // Получаем первый вопрос (предположим, что он первый в списке).
-        Question question = questions.get(0);
+        Question question = questions.get(CurrentQuestion);
+        // Получаем список вариантов ответов.
+        List<String> options = question.getOptions();
 
         // Получаем текст вопроса и устанавливаем его в TextView.
         String questionText = question.GetQuestionText();
         textView.setText(questionText);
+
+        // Создаем список для отслеживания использованных вариантов ответов.
+        List<Boolean> usedOptions = new ArrayList<>(Collections.nCopies(options.size(), false));
+
+        Random random = new Random();
+
+        Button answer1 = findViewById(R.id.Answer1);
+        Button answer2 = findViewById(R.id.Answer2);
+        Button answer3 = findViewById(R.id.Answer3);
+        Button answer4 = findViewById(R.id.Answer4);
+
+        answer1.setText(getUniqueOption(options, usedOptions, random));
+        answer2.setText(getUniqueOption(options, usedOptions, random));
+        answer3.setText(getUniqueOption(options, usedOptions, random));
+        answer4.setText(getUniqueOption(options, usedOptions, random));
     }
+
+
+
 }

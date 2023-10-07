@@ -50,9 +50,6 @@ public class Question {
         this.correctAnswer = correctAnswer;
     }
 
-    public void DisplayQuestionText(TextView textView, Question question){
-        textView.setText(question.questionText);
-    }
 }
 
 enum QuestionType { //Типы вопросов
