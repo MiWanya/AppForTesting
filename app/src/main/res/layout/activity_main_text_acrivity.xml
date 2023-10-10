@@ -10,9 +10,10 @@
     <RelativeLayout
         android:id="@+id/Question"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="525dp"
         android:layout_marginTop="50dp"
         android:layout_marginHorizontal="10sp"
+
         >
         <TextView
             android:id="@+id/QuestionText"
@@ -23,87 +24,75 @@
             android:fontFamily="@font/exo_2_bold"
             android:textColor="@color/white"
             android:layout_marginHorizontal="20dp"
+            android:layout_alignParentTop="true"
             android:textSize="20dp"
             />
         <TextView
-            android:id="@+id/Answer123"
+            android:id="@+id/optionText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/QuestionText"
-            android:layout_marginTop="50dp"
+            android:layout_below="@+id/QuestionText"
+            android:layout_marginTop="35dp"
             android:textSize="20dp"
             android:textColor="@color/white"
             android:background="@color/Gray"
             android:fontFamily="@font/exo_2_bold"
             android:layout_marginHorizontal="20dp"
             />
+        <Button
+            android:id="@+id/Answer1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/optionText"
+            android:fontFamily="@font/exo_2_bold"
+            android:textColor="@color/white"
+            android:layout_marginTop="30dp"
+            android:layout_marginHorizontal="20dp"
+            android:text="Вопрос 1"
+            android:layout_centerInParent="true"
+            />
+
+        <Button
+            android:id="@+id/Answer2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="@id/Answer4"
+            android:fontFamily="@font/exo_2_bold"
+            android:textColor="@color/white"
+            android:layout_below="@+id/Answer1"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
+            android:text="Вопрос 2"
+            />
+
+        <Button
+            android:id="@+id/Answer4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/exo_2_bold"
+            android:text="Вопрос 4"
+            android:textColor="@color/white"
+            android:layout_below="@id/Answer3"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
+            />
+
+        <Button
+            android:id="@+id/Answer3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/exo_2_bold"
+            android:textColor="@color/white"
+            android:text="Вопрос 3"
+            android:layout_marginHorizontal="20dp"
+            android:layout_below="@id/Answer2"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
+            />
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/Answers"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginHorizontal="10sp"
-        android:layout_below="@+id/Question"
-        android:layout_marginTop="10dp"
-        >
 
-    </RelativeLayout>
-
-    <Button
-        android:id="@+id/Answer1"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-100dp"
-        android:layout_marginLeft="20dp"
-        android:layout_alignTop="@+id/Answer3"
-        android:layout_alignParentTop="@id/Answer3"
-        android:layout_alignRight="@+id/Answer3"
-        android:fontFamily="@font/exo_2_bold"
-        android:textColor="@color/white"
-        android:text="Вопрос 1"
-        />
-
-    <Button
-        android:id="@+id/Answer2"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/Answers"
-        android:layout_marginTop="-100dp"
-        android:layout_marginRight="20dp"
-        android:layout_alignLeft="@+id/Answer1"
-        android:layout_alignTop="@id/Answer4"
-        android:layout_alignParentTop="@id/Answer4"
-        android:fontFamily="@font/exo_2_bold"
-        android:textColor="@color/white"
-        android:text="Вопрос 2"
-        />
-
-    <Button
-        android:id="@+id/Answer4"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/Answers"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_alignBottom="@+id/Answers"
-        android:fontFamily="@font/exo_2_bold"
-        android:text="Вопрос 4"
-        android:textColor="@color/white"
-        />
-
-    <Button
-        android:id="@+id/Answer3"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_alignBottom="@+id/Answers"
-        android:fontFamily="@font/exo_2_bold"
-        android:textColor="@color/white"
-        android:text="Вопрос 3"
-        />
 
     <LinearLayout
         android:layout_width="match_parent"

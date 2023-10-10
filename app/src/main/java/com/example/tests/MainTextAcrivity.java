@@ -59,10 +59,11 @@ public class MainTextAcrivity extends AppCompatActivity {
         List<Question> questions = questionManager.getQuestions();
 
         // Находим TextView в макете
-        TextView textView = findViewById(R.id.QuestionText);
+        TextView questionTextView = findViewById(R.id.QuestionText);
+        TextView optionTextView = findViewById(R.id.optionText);
 
         // Находим RelativeLayout с идентификатором "Answers" в макете
-        RelativeLayout answersLayout = findViewById(R.id.Answers);
+       // RelativeLayout answersLayout = findViewById(R.id.Answers);
 
         // Получаем первый вопрос (предположим, что он первый в списке)
         Question question = questions.get(CurrentQuestion);
@@ -72,7 +73,22 @@ public class MainTextAcrivity extends AppCompatActivity {
 
         // Получаем текст вопроса и устанавливаем его в TextView
         String questionText = question.GetQuestionText();
-        textView.setText(questionText);
+        questionTextView.setText(questionText);
+        List<String> optionText = question.getOptions();
+
+        // Создайте строку с текстом, который вы хотите добавить
+        StringBuilder addTextInOption = new StringBuilder();
+
+        for (int i=0; i<=3; i++){
+            if (i!=3){
+                addTextInOption.append((i+1) + ") ").append(optionText.get(i)).append("\n");
+            }
+            else {
+                addTextInOption.append((i+1) + ") ").append(optionText.get(i));
+            }
+        }
+
+        optionTextView.setText(addTextInOption);
 
         // Создаем список для отслеживания использованных вариантов ответов
         List<Boolean> usedOptions = new ArrayList<>(Collections.nCopies(options.size(), false));
