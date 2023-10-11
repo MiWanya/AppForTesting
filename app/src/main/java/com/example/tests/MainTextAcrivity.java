@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Random;
 
 public class MainTextAcrivity extends AppCompatActivity {
-    int CurrentQuestion = 1;
+    int CurrentQuestion = 0;
     Random random = new Random();
     QuestionManagerHelper questionManagerHelper;
     TextView questionTextView;
@@ -64,6 +64,9 @@ public class MainTextAcrivity extends AppCompatActivity {
                     CurrentQuestion -= 1;
                     questionManagerHelper.setCurrentQuestion(CurrentQuestion);
                     questionManagerHelper.loadQuestion();
+                }
+                if (CurrentQuestion < totalQuestions){
+                    NextQuestion.setBackgroundColor(colorBlue);
                 }
                 if (CurrentQuestion == 0){
                     PreviousQuestion.setBackgroundColor(colorGray2);
