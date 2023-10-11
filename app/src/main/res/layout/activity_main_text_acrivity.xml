@@ -14,9 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginHorizontal="10sp"
         android:layout_marginTop="10sp"
-
-        android:onClick="NextQuestion">
-
+        >
         <TextView
             android:id="@+id/QuestionText"
             android:layout_width="match_parent"
@@ -95,7 +93,7 @@
 
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -110,7 +108,12 @@
             android:layout_marginBottom="10sp"
             android:fontFamily="@font/exo_2_bold"
             android:text="@string/Back"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentLeft="true"
+
+            />
 
         <Button
             android:id="@+id/NextQuestion"
@@ -121,11 +124,14 @@
             android:layout_marginHorizontal="25sp"
             android:layout_marginBottom="10sp"
             android:text="@string/Continue"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
             />
 
 
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
 </RelativeLayout>
