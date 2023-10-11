@@ -6,89 +6,90 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainTextAcrivity">
-    
+
     <RelativeLayout
         android:id="@+id/Question"
         android:layout_width="match_parent"
-        android:layout_height="525dp"
-        android:layout_marginTop="50dp"
+        android:layout_height="575dp"
+        android:layout_alignParentTop="true"
         android:layout_marginHorizontal="10sp"
+        android:layout_marginTop="10sp"
 
-        >
+        android:onClick="NextQuestion">
+
         <TextView
             android:id="@+id/QuestionText"
             android:layout_width="match_parent"
-            android:background="@color/Gray"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="25dp"
+            android:background="@color/Gray"
             android:fontFamily="@font/exo_2_bold"
             android:textColor="@color/white"
-            android:layout_marginHorizontal="20dp"
-            android:layout_alignParentTop="true"
-            android:textSize="20dp"
-            />
+            android:textSize="20dp" />
+
         <TextView
             android:id="@+id/optionText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/QuestionText"
+            android:layout_alignParentLeft="true"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="35dp"
-            android:textSize="20dp"
-            android:textColor="@color/white"
             android:background="@color/Gray"
             android:fontFamily="@font/exo_2_bold"
-            android:layout_marginHorizontal="20dp"
-            />
+            android:textColor="@color/white"
+            android:textSize="20dp" />
+
         <Button
             android:id="@+id/Answer1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/optionText"
-            android:fontFamily="@font/exo_2_bold"
-            android:textColor="@color/white"
+            android:layout_alignParentLeft="true"
+            android:layout_marginHorizontal="60dp"
             android:layout_marginTop="30dp"
-            android:layout_marginHorizontal="20dp"
-            android:text="Вопрос 1"
-            android:layout_centerInParent="true"
-            />
+            android:fontFamily="@font/exo_2_bold"
+            android:text="А"
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/Answer2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="@id/Answer4"
+            android:layout_below="@+id/optionText"
+            android:layout_alignParentEnd="true"
+            android:layout_marginHorizontal="60dp"
+            android:layout_marginTop="30dp"
             android:fontFamily="@font/exo_2_bold"
-            android:textColor="@color/white"
-            android:layout_below="@+id/Answer1"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="10dp"
-            android:text="Вопрос 2"
-            />
+            android:text="B"
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/Answer4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/Answer2"
+            android:layout_alignParentEnd="true"
+            android:layout_marginHorizontal="60dp"
+            android:layout_marginTop="30dp"
             android:fontFamily="@font/exo_2_bold"
-            android:text="Вопрос 4"
-            android:textColor="@color/white"
-            android:layout_below="@id/Answer3"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="10dp"
-            />
+            android:text="D"
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/Answer3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/Answer1"
+            android:layout_alignParentLeft="true"
+            android:layout_marginHorizontal="60dp"
+            android:layout_marginTop="30dp"
             android:fontFamily="@font/exo_2_bold"
-            android:textColor="@color/white"
-            android:text="Вопрос 3"
-            android:layout_marginHorizontal="20dp"
-            android:layout_below="@id/Answer2"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="10dp"
-            />
+            android:text="C"
+            android:textColor="@color/white" />
 
     </RelativeLayout>
 
@@ -105,12 +106,11 @@
             android:id="@+id/PreviosQuestion"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:fontFamily="@font/exo_2_bold"
             android:layout_marginHorizontal="25sp"
             android:layout_marginBottom="10sp"
+            android:fontFamily="@font/exo_2_bold"
             android:text="@string/Back"
-            />
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/NextQuestion"

@@ -57,4 +57,5 @@ public class QuestionManager {
     public List<Question> getQuestions() {
         return questions;
     }
+    public int getCount(List<Question> questions) {return questions.size();}
 }
