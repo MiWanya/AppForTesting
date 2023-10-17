@@ -9,7 +9,7 @@ import java.net.URLConnection;
 public class DownloadTxtFile {
     public static void download() {
         String fileURL = "http://www.gutenberg.org/files/11/11-0.txt"; // Замените URL на нужный вам
-        String savePath = "src//assets/questions.txt"; // Относительный путь внутри проекта
+        String savePath = "assets/questions.txt"; // Относительный путь внутри проекта
 
         try {
             URL url = new URL(fileURL);
