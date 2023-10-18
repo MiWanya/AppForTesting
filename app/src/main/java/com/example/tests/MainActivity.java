@@ -14,11 +14,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
     }
 
     public void StartTesting(View view) {
-        DownloadTxtFile.download();
         // Переход на тестирование
+        new DownloadTxtFile(this).execute();
         Intent intent = new Intent(this, MainTextAcrivity.class);
         startActivity(intent);
     }
