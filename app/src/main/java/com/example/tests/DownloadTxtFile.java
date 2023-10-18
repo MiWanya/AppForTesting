@@ -1,5 +1,10 @@
 package com.example.tests;
 
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.util.Log;
+
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,30 +12,42 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class DownloadTxtFile {
+
+    private static final String TAG = "DownloadTxtFile";
+
     public static void download() {
-        String fileURL = "http://www.gutenberg.org/files/11/11-0.txt"; // Замените URL на нужный вам
-        String savePath = "assets/questions.txt"; // Относительный путь внутри проекта
+        new DownloadTask().execute();
+    }
 
-        try {
-            URL url = new URL(fileURL);
-            URLConnection connection = url.openConnection();
-            InputStream inputStream = connection.getInputStream();
+    private static class DownloadTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            String fileURL = "http://www.gutenberg.org/files/11/11-0.txt";
+            String savePath = Environment.getExternalStorageDirectory().getPath() + "/question.txt";
 
-            // Создаем файл и поток для записи
-            FileOutputStream outputStream = new FileOutputStream(savePath);
+            try {
+                URL url = new URL(fileURL);
+                URLConnection connection = url.openConnection();
+                InputStream inputStream = connection.getInputStream();
 
-            int bytesRead;
-            byte[] buffer = new byte[4096];
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
+                File file = new File(savePath);
+                FileOutputStream outputStream = new FileOutputStream(file);
+
+                int bytesRead;
+                byte[] buffer = new byte[4096];
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+
+                outputStream.close();
+                inputStream.close();
+
+                Log.d(TAG, "Файл успешно скачан и сохранен в " + savePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e(TAG, "Ошибка при скачивании файла: " + e.getMessage());
             }
-
-            outputStream.close();
-            inputStream.close();
-
-            System.out.println("Файл успешно скачан и сохранен внутри проекта.");
-        } catch (IOException e) {
-            e.printStackTrace();
+            return null;
         }
     }
 }
