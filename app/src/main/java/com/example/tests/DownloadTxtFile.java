@@ -3,7 +3,6 @@ package com.example.tests;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -61,7 +60,7 @@ public class DownloadTxtFile extends AsyncTask<Void, Void, Void> {
             String fileContents = sb.toString();
 
             // Теперь вы можете вывести содержимое файла в лог
-            Log.d("FileContents", fileContents);
+            Log.d("DowlandTxtFile", "fileContents");
 
             inputStream.close();
         } catch (IOException e) {
