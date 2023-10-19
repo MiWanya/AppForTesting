@@ -20,8 +20,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void StartTesting(View view) {
         // Переход на тестирование
-        new DownloadTxtFile(this).execute();
+        new DownloadTxtFile(this).execute("http://www.gutenberg.org/files/11/11-0.txt");
 
+        new ReadTxtFile(this).execute();
         Intent intent = new Intent(this, MainTextAcrivity.class);
         startActivity(intent);
     }

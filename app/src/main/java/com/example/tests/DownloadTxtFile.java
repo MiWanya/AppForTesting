@@ -3,15 +3,17 @@ package com.example.tests;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-
-import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-public class DownloadTxtFile extends AsyncTask<Void, Void, Void> {
+public class DownloadTxtFile extends AsyncTask<String, Void, Void> {
     private Context context;
 
     public DownloadTxtFile(Context context) {
@@ -19,52 +21,60 @@ public class DownloadTxtFile extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
-        String fileURL = "http://www.gutenberg.org/files/11/11-0.txt"; // Замените URL на нужный
-        String fileName = "questions.txt"; // Имя файла для сохранения во внутреннем хранилище
+    protected Void doInBackground(String... params) {
+        String fileURL = params[0]; // URL-адрес файла для загрузки
+        String fileName = "downloaded.txt"; // Имя файла для сохранения во внутреннем хранилище
+
+        HttpURLConnection connection = null;
+        InputStream inputStream = null;
+        FileOutputStream outputStream = null;
 
         try {
-            // Открываем файл для записи во внутреннем хранилище приложения
-            FileOutputStream outputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-            InputStream inputStream = new java.net.URL(fileURL).openStream();
+            URL url = new URL(fileURL);
+            connection = (HttpURLConnection) url.openConnection();
 
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
+            // Следим за перенаправлениями (код HTTP 302)
+            while (connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP
+                    || connection.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM
+                    || connection.getResponseCode() == HttpURLConnection.HTTP_SEE_OTHER) {
+                String newUrl = connection.getHeaderField("Location");
+                url = new URL(newUrl);
+                connection = (HttpURLConnection) url.openConnection();
             }
-            outputStream.close();
-            inputStream.close();
-        } catch (IOException e) {
+
+            connection.connect();
+
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                inputStream = connection.getInputStream();
+                outputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            } else {
+                Log.e("DownloadTxtFile", "Ошибка HTTP: " + connection.getResponseCode());
+            }
+        } catch (Exception e) {
+            Log.e("DownloadTxtFile", "Ошибка: " + e.getMessage());
             e.printStackTrace();
+        } finally {
+            try {
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            } catch (IOException e) {
+                Log.e("DownloadTxtFile", "Ошибка при закрытии потоков: " + e.getMessage());
+            }
         }
 
         return null;
-    }
-
-    @Override
-    protected void onPostExecute(Void result) {
-        // Вызывается после завершения фоновой задачи, здесь можно выполнить действия после завершения загрузки и сохранения файла
-        try {
-            FileInputStream inputStream = context.openFileInput("questions.txt");
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line);
-                sb.append("\n");
-            }
-
-            String fileContents = sb.toString();
-
-            // Теперь вы можете вывести содержимое файла в лог
-            Log.d("DowlandTxtFile", "fileContents");
-
-            inputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
