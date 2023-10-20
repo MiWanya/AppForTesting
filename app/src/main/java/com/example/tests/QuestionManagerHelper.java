@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ public class QuestionManagerHelper {
 
     public void initialize() {
         try {
-            InputStream inputStream = context.getAssets().open("questions1.txt");
+            InputStream inputStream = context.getAssets().open("question.txt");
             QuestionManager questionManager = new QuestionManager(inputStream);
             questions = questionManager.getQuestions();
         } catch (IOException e) {
