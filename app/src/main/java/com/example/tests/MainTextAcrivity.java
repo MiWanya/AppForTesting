@@ -30,23 +30,37 @@ public class MainTextAcrivity extends AppCompatActivity {
     int CurrentQuestion = 0;
     Random random = new Random();
     QuestionManagerHelper questionManagerHelper;
-    TextView questionTextView;
-    TextView optionTextView;
+    private Button lastClickedButton; // Последняя нажатая кнопка
     Button PreviousQuestion;
     Button NextQuestion;
+    Button Answer1;
+    Button Answer2;
+    Button Answer3;
+    Button Answer4;
 
+    int colorGray2;
+    int colorBlue;
+    int colorGold;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_text_acrivity);
 
-        int colorGray2 = ContextCompat.getColor(this, R.color.Gray2);
-        int colorBlue = ContextCompat.getColor(this, R.color.Blue);
+        // Получаем цвета из ресурсов
+        colorGray2 = ContextCompat.getColor(this, R.color.Gray2);
+        colorBlue = ContextCompat.getColor(this, R.color.Blue);
+        colorGold = ContextCompat.getColor(this, R.color.Gold);
+
         TextView questionTextView = findViewById(R.id.QuestionText);
         TextView optionTextView = findViewById(R.id.optionText);
-        Button PreviousQuestion = findViewById(R.id.PreviosQuestion);
-        Button NextQuestion = findViewById(R.id.NextQuestion);
+
+        PreviousQuestion = findViewById(R.id.PreviosQuestion);
+        NextQuestion = findViewById(R.id.NextQuestion);
+        Answer1 = findViewById(R.id.Answer1);
+        Answer2 = findViewById(R.id.Answer2);
+        Answer3 = findViewById(R.id.Answer3);
+        Answer4 = findViewById(R.id.Answer4);
 
         PreviousQuestion.setBackgroundColor(colorGray2);
         NextQuestion.setBackgroundColor(colorBlue);
@@ -74,6 +88,8 @@ public class MainTextAcrivity extends AppCompatActivity {
                 if (CurrentQuestion == totalQuestions) {
                     NextQuestion.setBackgroundColor(colorGray2);
                 }
+
+                setDefaultColors(colorBlue);
             }
         });
 
@@ -93,9 +109,60 @@ public class MainTextAcrivity extends AppCompatActivity {
                 if (CurrentQuestion > 0) {
                     PreviousQuestion.setBackgroundColor(colorBlue);
                 }
+                setDefaultColors(colorBlue);
+            }
+        });
+
+        Answer1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeButtonColor((Button) view);
+
+            }
+        });
+
+        Answer2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeButtonColor((Button) view);
+            }
+        });
+
+        Answer3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeButtonColor((Button) view);
+            }
+        });
+
+        Answer4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeButtonColor((Button) view);
             }
         });
     }
+
+    private void changeButtonColor (Button button) {
+        // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
+        if (lastClickedButton != null) {
+            lastClickedButton.setBackgroundColor(colorBlue);
+        }
+
+        // Устанавливаем новую последнюю нажатую кнопку
+        lastClickedButton = button;
+
+        // Устанавливаем новый цвет для текущей кнопки
+        button.setBackgroundColor(colorGold);
+    }
+
+    private void setDefaultColors(int color){
+        Answer1.setBackgroundColor(color);
+        Answer2.setBackgroundColor(color);
+        Answer3.setBackgroundColor(color);
+        Answer4.setBackgroundColor(color);
+    }
+
 
     @Override
     protected void onResume() {

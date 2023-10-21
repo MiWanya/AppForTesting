@@ -29,7 +29,7 @@ public class QuestionManagerHelper {
 
     public void initialize() {
         try {
-            InputStream inputStream = context.getAssets().open("question.txt");
+            InputStream inputStream = context.getAssets().open("questions1.txt");
             QuestionManager questionManager = new QuestionManager(inputStream);
             questions = questionManager.getQuestions();
         } catch (IOException e) {
