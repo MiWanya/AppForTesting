@@ -104,7 +104,7 @@ public class MainTextAcrivity extends AppCompatActivity {
                     questionManagerHelper.loadQuestion();
                 }
                 if (CurrentQuestion == totalQuestions - 1){
-                    NextQuestion.setBackgroundColor(colorGray2);
+                    NextQuestion.setBackgroundColor(colorGold);
                 }
                 if (CurrentQuestion > 0) {
                     PreviousQuestion.setBackgroundColor(colorBlue);
