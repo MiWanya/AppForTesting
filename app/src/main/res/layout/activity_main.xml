@@ -24,35 +24,13 @@
         android:id="@+id/ThemeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:layout_marginBottom="120dp"
+        android:layout_marginTop="50dp"
         android:fontFamily="@font/exo_2_bold"
         android:text="@string/Theme"
         android:textSize="48sp"
-        app:layout_constraintBottom_toTopOf="@+id/Namefield"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/EnterNameText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:fontFamily="@font/exo_2_bold"
-        android:text="@string/Enter_name"
-        app:layout_constraintBottom_toTopOf="@+id/Namefield"
-        app:layout_constraintStart_toStartOf="@+id/Namefield" />
-
-    <TextView
-        android:id="@+id/EnterSurnameText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:fontFamily="@font/exo_2_bold"
-        android:text="@string/Enter_surname"
-        app:layout_constraintBottom_toTopOf="@+id/surnameField"
-        app:layout_constraintStart_toStartOf="@+id/surnameField" />
 
     <EditText
         android:id="@+id/Namefield"
@@ -67,21 +45,98 @@
         android:minHeight="48dp"
         app:layout_constraintBottom_toTopOf="@+id/EnterSurnameText"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.464"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/EnterSurnameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/exo_2_bold"
+        android:text="@string/Enter_surname"
+        app:layout_constraintBottom_toTopOf="@+id/surnameField"
+        app:layout_constraintStart_toStartOf="@+id/surnameField" />
+
+    <TextView
+        android:id="@+id/EnterNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/exo_2_bold"
+        android:text="@string/Enter_name"
+        app:layout_constraintBottom_toTopOf="@+id/Namefield"
+        app:layout_constraintStart_toStartOf="@+id/Namefield" />
 
     <EditText
         android:id="@+id/surnameField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="15dp"
         android:autofillHints="@string/Surname"
         android:ems="10"
         android:fontFamily="@font/exo_2_bold"
         android:hint="@string/Surname"
         android:inputType="text"
         android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/EnterNickNameText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.464"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/EnterNickNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="15dp"
+        android:fontFamily="@font/exo_2_bold"
+        android:text="@string/Enter_nickname"
+        app:layout_constraintBottom_toTopOf="@+id/nicknameField"
+        app:layout_constraintStart_toStartOf="@+id/nicknameField" />
+
+    <EditText
+        android:id="@+id/nicknameField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:autofillHints="@string/Enter_nickname"
+        android:ems="10"
+        android:fontFamily="@font/exo_2_bold"
+        android:hint="@string/Enter_nickname"
+        android:inputType="text"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/EnterCityText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.464"
+        app:layout_constraintStart_toStartOf="parent" />
+    <TextView
+        android:id="@+id/EnterCityText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/exo_2_bold"
+        android:text="@string/Enter_city"
+        app:layout_constraintBottom_toTopOf="@+id/cityField"
+        app:layout_constraintStart_toStartOf="@+id/cityField" />
+
+    <EditText
+        android:id="@+id/cityField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:autofillHints="@string/Enter_city"
+        android:ems="10"
+        android:fontFamily="@font/exo_2_bold"
+        android:hint="@string/Enter_city"
+        android:inputType="text"
+        android:minHeight="48dp"
         app:layout_constraintBottom_toTopOf="@+id/startButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.464"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -31,16 +31,9 @@ public class MainTextAcrivity extends AppCompatActivity {
     Random random = new Random();
     QuestionManagerHelper questionManagerHelper;
     private Button lastClickedButton; // Последняя нажатая кнопка
-    Button PreviousQuestion;
-    Button NextQuestion;
-    Button Answer1;
-    Button Answer2;
-    Button Answer3;
-    Button Answer4;
+    Button PreviousQuestion, NextQuestion, Answer1, Answer2, Answer3, Answer4;
 
-    int colorGray2;
-    int colorBlue;
-    int colorGold;
+    int colorGray2, colorBlue, colorGold;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

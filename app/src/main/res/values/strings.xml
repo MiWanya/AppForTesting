@@ -5,8 +5,12 @@
     <string name="Theme">Тема</string>
     <string name="Name">Имя</string>
     <string name="Surname">Фамилия</string>
+    <string name="NickName">Никнейм</string>
+    <string name="City">Город</string>
     <string name="Enter_name">Введите имя</string>
     <string name="Enter_surname">Введите фамилию</string>
+    <string name="Enter_nickname">Введите ник</string>
+    <string name="Enter_city">Введите город</string>
     <string name="getData">Заргузить</string>
     <string name="Continue">Продолжить</string>
     <string name="Back">Назад</string>

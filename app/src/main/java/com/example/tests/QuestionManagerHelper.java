@@ -16,8 +16,7 @@ public class QuestionManagerHelper {
     private Context context;
     private List<Question> questions;
     private int currentQuestion;
-    private TextView questionTextView;
-    private TextView optionTextView;
+    private TextView questionTextView, optionTextView;
     private List<Boolean> usedOptions;
 
     public QuestionManagerHelper(Context context, int currentQuestion, TextView questionTextView, TextView optionTextView) {
