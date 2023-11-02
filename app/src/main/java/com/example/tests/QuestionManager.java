@@ -17,34 +17,50 @@ public class QuestionManager {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
+            int questionCount = 0;
             String questionText = null;
             List<String> options = new ArrayList<>();
-            String correctAnswer = null;
+            List<String> correctAnswers = new ArrayList<>();
             QuestionType questionType = null;
 
             while ((line = reader.readLine()) != null) {
-                if (line.startsWith("Вопрос: ")) {
-                    // Найден новый вопрос, сохраняем предыдущий, если есть
-                    if (questionText != null && options.size() > 0 && correctAnswer != null && questionType != null) {
-                        Question question = new Question(questionText, questionType, options, correctAnswer);
+                if (line.startsWith("# ")) {
+                    // Найдено новое количество вопросов, сохраняем предыдущий вопрос, если есть
+                    if (questionText != null) {
+                        questionCount = Integer.parseInt(line.substring(2).trim());
+                        if (correctAnswers.size() == 1) {
+                            questionType = QuestionType.SINGLE_CHOICE;
+                        } else if (correctAnswers.size() > 1) {
+                            questionType = QuestionType.MULTIPLE_CHOICE;
+                        }
+                        Question question = new Question(questionText, questionType, options, correctAnswers);
                         questions.add(question);
                         options.clear();
+                        correctAnswers.clear();
                     }
-                    questionText = line.substring(8).trim();
-                    questionType = QuestionType.SINGLE_CHOICE; // Здесь вы можете указать тип вопроса, который вам нужен
-                } else if (line.startsWith("Ответы: ")) {
-                    String[] answers = line.substring(8).trim().split(", ");
+                } else if (line.startsWith("$ ")) {
+                    questionText = line.substring(2).trim();
+                } else if (line.startsWith("^ ")) {
+                    String[] answers = line.substring(2).trim().split(", ");
                     for (String answer : answers) {
                         options.add(answer);
                     }
-                } else if (line.startsWith("Правильный ответ: ")) {
-                    correctAnswer = line.substring(18).trim();
+                } else if (line.startsWith("* ")) {
+                    String[] correctAnswer = line.substring(2).trim().split(", ");
+                    for (String correct : correctAnswer) {
+                        correctAnswers.add(correct);
+                    }
                 }
             }
 
             // Добавляем последний вопрос
-            if (questionText != null && options.size() > 0 && correctAnswer != null && questionType != null) {
-                Question question = new Question(questionText, questionType, options, correctAnswer);
+            if (questionText != null) {
+                if (correctAnswers.size() == 1) {
+                    questionType = QuestionType.SINGLE_CHOICE;
+                } else if (correctAnswers.size() > 1) {
+                    questionType = QuestionType.MULTIPLE_CHOICE;
+                }
+                Question question = new Question(questionText, questionType, options, correctAnswers);
                 questions.add(question);
             }
 

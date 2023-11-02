@@ -7,11 +7,11 @@ import java.util.List;
 public class Question {
     private String questionText;
     private List<String> options;
-    private String correctAnswer;
+    private List<String> correctAnswer;
     private QuestionType questionType;
 
     //Добавить вопрос
-    public Question(String questionText, QuestionType questionType, List<String> options, String correctAnswer) {
+    public Question(String questionText, QuestionType questionType, List<String> options, List<String> correctAnswer) {
         this.questionText = questionText;
         this.questionType = questionType;
         this.options = options;
@@ -49,12 +49,12 @@ public class Question {
     }
 
     // Получить правильный ответ
-    public String getCorrectAnswer(){ //Получить правильный ответ
+    public List<String> getCorrectAnswer(){ //Получить правильный ответ
         return correctAnswer;
     }
 
     //Установить правильный ответ
-    public void setCorrectAnswer(String correctAnswer){ //Задать правильный ответ
+    public void setCorrectAnswer(List<String> correctAnswer){ //Задать правильный ответ
         this.correctAnswer = correctAnswer;
     }
 
@@ -62,7 +62,5 @@ public class Question {
 
 enum QuestionType { //Типы вопросов
     SINGLE_CHOICE,
-    MULTIPLE_CHOICE,
-    TRUE_OR_FALSE,
-    TYPE_ANSWER;
+    MULTIPLE_CHOICE;
 }
