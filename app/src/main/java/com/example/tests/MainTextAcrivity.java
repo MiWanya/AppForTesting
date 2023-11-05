@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -34,11 +35,14 @@ public class MainTextAcrivity extends AppCompatActivity {
     Button PreviousQuestion, NextQuestion, Answer1, Answer2, Answer3, Answer4;
 
     int colorGray2, colorBlue, colorGold;
+    int currentQuestionIndex = 1; // Индекс текущего вопроса
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_text_acrivity);
+
+
 
         // Получаем цвета из ресурсов
         colorGray2 = ContextCompat.getColor(this, R.color.Gray2);
@@ -58,28 +62,132 @@ public class MainTextAcrivity extends AppCompatActivity {
         PreviousQuestion.setBackgroundColor(colorGray2);
         NextQuestion.setBackgroundColor(colorBlue);
 
-        questionManagerHelper = new QuestionManagerHelper(this, CurrentQuestion, questionTextView, optionTextView);
-        questionManagerHelper.initialize();
-        questionManagerHelper.loadQuestion();
+        //questionManagerHelper = new QuestionManagerHelper(this, CurrentQuestion, questionTextView, optionTextView);
+        //questionManagerHelper.initialize();
+        //questionManagerHelper.loadQuestion();
+
+        List<Question> questionsList = new ArrayList<>(); // Создаем список вопросов
+
+        try {
+            // Открываем файл в папке assets
+            InputStream inputStream = getAssets().open("questions.txt");
+
+            // Создаем InputStreamReader для чтения текста из InputStream
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+
+            // Переменные для хранения вопросов, ответов и правильных ответов
+            String question = "";
+            List<String> options = new ArrayList<>();
+            List<String> correctAnswers = new ArrayList<>();
+            QuestionType questionType = QuestionType.SINGLE_CHOICE;
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.startsWith("$ ")) {
+                    // Это строка с текстом вопроса
+                    question = line.substring(2);
+                } else if (line.startsWith("^ ")) {
+                    // Это строка с вариантами ответов и правильными ответами
+                    String content = line.substring(2);
+                    String[] parts = content.split(",");
+
+                    if (parts.length > 1) {
+                        questionType = QuestionType.MULTIPLE_CHOICE;
+                    }
+
+                    List<String> questionOptions = new ArrayList<>();
+                    List<String> questionCorrectAnswers = new ArrayList<>();
+
+                    for (String part : parts) {
+                        if (part.startsWith("*")) {
+                            questionCorrectAnswers.add(part.substring(1));
+                        } else {
+                            questionOptions.add(part);
+                        }
+                    }
+
+                    options.addAll(questionOptions);
+
+                    correctAnswers.addAll(questionCorrectAnswers);
+                } else if (line.isEmpty()) {
+                    // Пустая строка обозначает конец вопроса
+                    Question question1 = new Question(question, questionType, new ArrayList<>(options), new ArrayList<>(correctAnswers));
+                    questionsList.add(question1);
+
+                    // Очищаем переменные для следующего вопроса
+                    question = "";
+                    options.clear();
+                    correctAnswers.clear();
+                    questionType = QuestionType.SINGLE_CHOICE;
+                }
+            }
+
+            // Закрываем потоки
+            bufferedReader.close();
+            reader.close();
+            inputStream.close();
+
+            // Теперь у вас есть список вопросов questionsList, который вы можете использовать в вашем приложении.
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (!questionsList.isEmpty()) {
+            if (currentQuestionIndex < questionsList.size()) {
+                Log.d("Questions", "Number of questions: " + questionsList.size());
+                Question question = questionsList.get(currentQuestionIndex);
+                questionTextView.setText(question.GetQuestionText());
+
+                // Создаем строку для вариантов ответов
+                StringBuilder optionsText = new StringBuilder();
+                List<String> options = question.getOptions();
+                for (int i = 0; i < options.size(); i++) {
+                    optionsText.append((i + 1) + ". " + options.get(i)); // Нумерация вариантов ответов
+                    if (i < options.size() - 1) {
+                        optionsText.append("\n"); // Перенос строки между вариантами
+                    }
+                }
+                // Устанавливаем текст вариантов ответов
+                optionTextView.setText(optionsText.toString());
+            } else {
+                // Показываем сообщение о завершении вопросов
+                questionTextView.setText("Вопросы закончились");
+                optionTextView.setText("");
+            }
+        }
 
         PreviousQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int totalQuestions = questionManagerHelper.getQuestionsCount();
-                if (CurrentQuestion > 0) {
-                    PreviousQuestion.setBackgroundColor(colorBlue);
-                    CurrentQuestion -= 1;
-                    questionManagerHelper.setCurrentQuestion(CurrentQuestion);
-                    questionManagerHelper.loadQuestion();
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--; // Возвращаемся к предыдущему вопросу
+
+                    Question question = questionsList.get(currentQuestionIndex);
+                    questionTextView.setText(question.GetQuestionText());
+
+                    StringBuilder optionsText = new StringBuilder();
+                    List<String> options = question.getOptions();
+                    for (int i = 0; i < options.size(); i++) {
+                        optionsText.append((i + 1) + ". " + options.get(i));
+                        if (i < options.size() - 1) {
+                            optionsText.append("\n");
+                        }
+                    }
+                    optionTextView.setText(optionsText.toString());
                 }
-                if (CurrentQuestion < totalQuestions){
+                if (currentQuestionIndex < questionsList.size()){
                     NextQuestion.setBackgroundColor(colorBlue);
                 }
-                if (CurrentQuestion == 0){
+                if (currentQuestionIndex == 1){
                     PreviousQuestion.setBackgroundColor(colorGray2);
                 }
-                if (CurrentQuestion == totalQuestions) {
+                if (currentQuestionIndex == questionsList.size()) {
                     NextQuestion.setBackgroundColor(colorGray2);
+                }
+                if (currentQuestionIndex == 0){
+                    Intent intent = new Intent(MainTextAcrivity.this, MainActivity.class);
+                    startActivity(intent);
                 }
 
                 setDefaultColors(colorBlue);
@@ -89,17 +197,32 @@ public class MainTextAcrivity extends AppCompatActivity {
         NextQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int totalQuestions = questionManagerHelper.getQuestionsCount();
-                if (CurrentQuestion < totalQuestions - 1) {
-                    NextQuestion.setBackgroundColor(colorBlue);
-                    CurrentQuestion += 1;
-                    questionManagerHelper.setCurrentQuestion(CurrentQuestion);
-                    questionManagerHelper.loadQuestion();
+                if (currentQuestionIndex < questionsList.size()) {
+                    currentQuestionIndex++; // Переключаемся на следующий вопрос
+
+                    if (currentQuestionIndex < questionsList.size()) {
+                        Question question = questionsList.get(currentQuestionIndex);
+                        questionTextView.setText(question.GetQuestionText());
+
+                        StringBuilder optionsText = new StringBuilder();
+                        List<String> options = question.getOptions();
+                        for (int i = 0; i < options.size(); i++) {
+                            optionsText.append((i + 1) + ". " + options.get(i));
+                            if (i < options.size() - 1) {
+                                optionsText.append("\n");
+                            }
+                        }
+                        optionTextView.setText(optionsText.toString());
+                    } else {
+                        // Показываем сообщение о завершении вопросов
+                        questionTextView.setText("Вопросы закончились");
+                        optionTextView.setText("");
+                    }
                 }
-                if (CurrentQuestion == totalQuestions - 1){
+                if (currentQuestionIndex == questionsList.size() - 1){
                     NextQuestion.setBackgroundColor(colorGold);
                 }
-                if (CurrentQuestion > 0) {
+                if (currentQuestionIndex > 0) {
                     PreviousQuestion.setBackgroundColor(colorBlue);
                 }
                 setDefaultColors(colorBlue);
@@ -135,8 +258,7 @@ public class MainTextAcrivity extends AppCompatActivity {
             }
         });
     }
-
-    private void changeButtonColor (Button button) {
+        private void changeButtonColor (Button button) {
         // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
         if (lastClickedButton != null) {
             lastClickedButton.setBackgroundColor(colorBlue);
