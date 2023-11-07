@@ -250,32 +250,34 @@ public class MainTextAcrivity extends AppCompatActivity {
         Answer1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeButtonColor((Button) view);
+                changeButtonColorSingle((Button) view);
             }
         });
 
         Answer2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeButtonColor((Button) view);
+
+                changeButtonColorSingle((Button) view);
             }
         });
 
         Answer3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeButtonColor((Button) view);
+                changeButtonColorSingle((Button) view);
             }
         });
 
         Answer4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeButtonColor((Button) view);
+
+                changeButtonColorSingle((Button) view);
             }
         });
     }
-        private void changeButtonColor (Button button) {
+        private void changeButtonColorSingle (Button button) {
         // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
         if (lastClickedButton != null) {
             lastClickedButton.setBackgroundColor(colorBlue);
@@ -287,6 +289,14 @@ public class MainTextAcrivity extends AppCompatActivity {
         // Устанавливаем новый цвет для текущей кнопки
         button.setBackgroundColor(colorGold);
     }
+
+        private void changeButtonColorMulti (Button button) {
+            if (button.getDrawingCacheBackgroundColor() == colorBlue) {
+                button.setBackgroundColor(colorGold);
+            } else {
+                button.setBackgroundColor(colorBlue);
+            }
+        }
 
     private void setDefaultColors(int color){
         Answer1.setBackgroundColor(color);
