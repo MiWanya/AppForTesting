@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import java.io.File;
 import java.io.FileOutputStream;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,14 +16,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String githubUrl = "https://github.com/MiWanya/AppForTesting/blob/master/app/src/main/assets/questions.txt";
+        String fileName = "questions.txt";
+        File file = new File(getFilesDir(), "sampledata/" + fileName);
+        String filePath = file.getAbsolutePath();
+        FileDownloader downloader = new FileDownloader(githubUrl, filePath);
+        downloader.startDownload();
 
     }
 
     public void StartTesting(View view) {
         // Переход на тестирование
-        new DownloadTxtFile(this).execute("http://www.gutenberg.org/files/11/11-0.txt");
-
+        new DownloadTxtFile(this).execute("https://github.com/MiWanya/AppForTesting/blob/master/app/src/main/assets/questions.txt");
         new ReadTxtFile(this).execute();
+
+
         Intent intent = new Intent(this, MainTextAcrivity.class);
         startActivity(intent);
     }

@@ -4,15 +4,12 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class QuestionManagerHelper {
@@ -34,7 +31,7 @@ public class QuestionManagerHelper {
 
     public void initialize() {
         try {
-            InputStream inputStream = context.getAssets().open("questions.txt");
+            InputStream inputStream = context.getAssets().open("sampledata/questions.txt");
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             questions = new ArrayList<>();
             options = new ArrayList<>();

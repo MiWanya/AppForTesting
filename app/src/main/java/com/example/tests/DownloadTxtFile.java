@@ -3,6 +3,10 @@ package com.example.tests;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class DownloadTxtFile extends AsyncTask<String, Void, Void> {
     private Context context;
@@ -20,8 +25,42 @@ public class DownloadTxtFile extends AsyncTask<String, Void, Void> {
         this.context = context;
     }
 
+    public void overwriteQuestionsFileFromUrl() {
+        try {
+            // URL для загрузки данных из GitHub
+            String githubUrl = "https://github.com/MiWanya/AppForTesting/blob/master/app/src/main/assets/questions.txtx";
+
+            // Открываем соединение с URL и получаем входной поток данных
+            URL url = new URL(githubUrl);
+            InputStream inputStream = url.openStream();
+
+            // Читаем данные из входного потока
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+
+            // Закрываем входной поток
+            inputStream.close();
+
+            // Записываем скачанные данные в целевой файл в папке sampledata
+            File questionsFile = new File(context.getFilesDir().getParent() + "/sampledata/questions.txt");
+            FileOutputStream fos = new FileOutputStream(questionsFile);
+            fos.write(stringBuilder.toString().getBytes());
+            fos.close();
+
+
+            // Файл успешно перезаписан
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Возникла ошибка при скачивании и записи файла
+        }
+    }
+
     @Override
-    protected Void doInBackground(String... params) {
+    protected Void doInBackground(@NonNull String... params) {
         String fileURL = params[0]; // URL-адрес файла для загрузки
         String fileName = "downloaded.txt"; // Имя файла для сохранения во внутреннем хранилище
 
