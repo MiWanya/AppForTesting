@@ -1,8 +1,10 @@
 package com.example.tests;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,7 +32,6 @@ import java.util.Random;
 public class MainTextAcrivity extends AppCompatActivity {
     int CurrentQuestion = 0;
     Random random = new Random();
-    QuestionManagerHelper questionManagerHelper;
     private Button lastClickedButton; // Последняя нажатая кнопка
     Button PreviousQuestion, NextQuestion, Answer1, Answer2, Answer3, Answer4;
 
@@ -42,16 +43,16 @@ public class MainTextAcrivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_text_acrivity);
 
-
-
         // Получаем цвета из ресурсов
         colorGray2 = ContextCompat.getColor(this, R.color.Gray2);
         colorBlue = ContextCompat.getColor(this, R.color.Blue);
         colorGold = ContextCompat.getColor(this, R.color.Gold);
 
+        // Получаем текстовые поля
         TextView questionTextView = findViewById(R.id.QuestionText);
         TextView optionTextView = findViewById(R.id.optionText);
 
+        // Получаем кнопки
         PreviousQuestion = findViewById(R.id.PreviosQuestion);
         NextQuestion = findViewById(R.id.NextQuestion);
         Answer1 = findViewById(R.id.Answer1);
@@ -59,14 +60,27 @@ public class MainTextAcrivity extends AppCompatActivity {
         Answer3 = findViewById(R.id.Answer3);
         Answer4 = findViewById(R.id.Answer4);
 
+        // Устанавливаем цвет
         PreviousQuestion.setBackgroundColor(colorGray2);
         NextQuestion.setBackgroundColor(colorBlue);
 
-        //questionManagerHelper = new QuestionManagerHelper(this, CurrentQuestion, questionTextView, optionTextView);
-        //questionManagerHelper.initialize();
-        //questionManagerHelper.loadQuestion();
+        // Создаем список вопросов
+        List<Question> questionsList = new ArrayList<>();
 
-        List<Question> questionsList = new ArrayList<>(); // Создаем список вопросов
+        // Создайте диалоговое окно с вопросом
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Завершить тестирование?");
+        builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // Здесь можно разместить код для завершения тестирования
+                finish();
+            }
+        });
+        builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
 
         try {
             // Открываем файл в папке assets
@@ -151,15 +165,16 @@ public class MainTextAcrivity extends AppCompatActivity {
                 // Устанавливаем текст вариантов ответов
                 optionTextView.setText(optionsText.toString());
             } else {
-                // Показываем сообщение о завершении вопросов
-                questionTextView.setText("Вопросы закончились");
-                optionTextView.setText("");
+                // Покажите диалоговое окно
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         }
 
         PreviousQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Возврат к предыдущему вопросу
                 if (currentQuestionIndex > 0) {
                     currentQuestionIndex--; // Возвращаемся к предыдущему вопросу
 
@@ -176,15 +191,15 @@ public class MainTextAcrivity extends AppCompatActivity {
                     }
                     optionTextView.setText(optionsText.toString());
                 }
+                // Если есть ещё вопросы для кнопки Продолжить
                 if (currentQuestionIndex < questionsList.size()){
                     NextQuestion.setBackgroundColor(colorBlue);
                 }
+                // Первый вопрос
                 if (currentQuestionIndex == 1){
                     PreviousQuestion.setBackgroundColor(colorGray2);
                 }
-                if (currentQuestionIndex == questionsList.size()) {
-                    NextQuestion.setBackgroundColor(colorGray2);
-                }
+                // Возврат назад с первого вопроса
                 if (currentQuestionIndex == 0){
                     Intent intent = new Intent(MainTextAcrivity.this, MainActivity.class);
                     startActivity(intent);
@@ -197,6 +212,7 @@ public class MainTextAcrivity extends AppCompatActivity {
         NextQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Переход к следующему вопросу
                 if (currentQuestionIndex < questionsList.size()) {
                     currentQuestionIndex++; // Переключаемся на следующий вопрос
 
@@ -214,14 +230,16 @@ public class MainTextAcrivity extends AppCompatActivity {
                         }
                         optionTextView.setText(optionsText.toString());
                     } else {
-                        // Показываем сообщение о завершении вопросов
-                        questionTextView.setText("Вопросы закончились");
-                        optionTextView.setText("");
+                        // Покажите диалоговое окно
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
                     }
                 }
+                // Последний вопрос
                 if (currentQuestionIndex == questionsList.size() - 1){
                     NextQuestion.setBackgroundColor(colorGold);
                 }
+                // Стандартный цвет кнопок
                 if (currentQuestionIndex > 0) {
                     PreviousQuestion.setBackgroundColor(colorBlue);
                 }
@@ -233,7 +251,6 @@ public class MainTextAcrivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 changeButtonColor((Button) view);
-
             }
         });
 
