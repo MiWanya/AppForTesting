@@ -6,7 +6,11 @@ import androidx.core.content.ContextCompat;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -66,10 +70,12 @@ public class MainTextAcrivity extends AppCompatActivity {
 
         // Создаем список вопросов
         List<Question> questionsList = new ArrayList<>();
+        QuestionType type = null;
 
         // Создайте диалоговое окно с вопросом
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Завершить тестирование?");
+
         builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // Здесь можно разместить код для завершения тестирования
@@ -106,10 +112,6 @@ public class MainTextAcrivity extends AppCompatActivity {
                     String content = line.substring(2);
                     String[] parts = content.split(",");
 
-                    if (parts.length > 1) {
-                        questionType = QuestionType.MULTIPLE_CHOICE;
-                    }
-
                     List<String> questionOptions = new ArrayList<>();
                     List<String> questionCorrectAnswers = new ArrayList<>();
 
@@ -124,6 +126,15 @@ public class MainTextAcrivity extends AppCompatActivity {
                     options.addAll(questionOptions);
 
                     correctAnswers.addAll(questionCorrectAnswers);
+                }else if (line.startsWith("* ")){
+                    String content = line.substring(2);
+                    String[] parts = content.split(",");
+
+                    if (parts.length > 1) {
+                        questionType = QuestionType.MULTIPLE_CHOICE;
+                    } else {
+                        questionType = QuestionType.SINGLE_CHOICE;
+                    }
                 } else if (line.isEmpty()) {
                     // Пустая строка обозначает конец вопроса
                     Question question1 = new Question(question, questionType, new ArrayList<>(options), new ArrayList<>(correctAnswers));
@@ -133,7 +144,7 @@ public class MainTextAcrivity extends AppCompatActivity {
                     question = "";
                     options.clear();
                     correctAnswers.clear();
-                    questionType = QuestionType.SINGLE_CHOICE;
+                    questionType = null;
                 }
             }
 
@@ -250,30 +261,58 @@ public class MainTextAcrivity extends AppCompatActivity {
         Answer1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeButtonColorSingle((Button) view);
+                boolean isButtonClicked = false;
+                Question question = questionsList.get(currentQuestionIndex);
+                QuestionType type = question.getQuestionType();
+                if (type == QuestionType.SINGLE_CHOICE){
+                    changeButtonColorSingle((Button) view);
+                } else if (type == QuestionType.MULTIPLE_CHOICE) {
+                    changeButtonColorMulti((Button) view);
+                }
             }
         });
 
         Answer2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                changeButtonColorSingle((Button) view);
+                boolean isButtonClicked = false;
+                Question question = questionsList.get(currentQuestionIndex);
+                QuestionType type = question.getQuestionType();
+                Log.d("Answer2", "Type " + type);
+                if (type == QuestionType.SINGLE_CHOICE){
+                    changeButtonColorSingle((Button) view);
+                } else if (type == QuestionType.MULTIPLE_CHOICE) {
+                    changeButtonColorMulti((Button) view);
+                }
             }
         });
 
         Answer3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeButtonColorSingle((Button) view);
+                boolean isButtonClicked = false;
+                Question question = questionsList.get(currentQuestionIndex);
+                QuestionType type = question.getQuestionType();
+                if (type == QuestionType.SINGLE_CHOICE){
+                    changeButtonColorSingle((Button) view);
+                } else if (type == QuestionType.MULTIPLE_CHOICE) {
+                    changeButtonColorMulti((Button) view);
+                }
             }
         });
 
         Answer4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                changeButtonColorSingle((Button) view);
+                boolean isButtonClicked = false;
+                int count = 0;
+                Question question = questionsList.get(currentQuestionIndex);
+                QuestionType type = question.getQuestionType();
+                if (type == QuestionType.SINGLE_CHOICE){
+                    changeButtonColorSingle((Button) view);
+                } else if (type == QuestionType.MULTIPLE_CHOICE) {
+                    changeButtonColorMulti((Button) view);
+                }
             }
         });
     }
@@ -282,7 +321,6 @@ public class MainTextAcrivity extends AppCompatActivity {
         if (lastClickedButton != null) {
             lastClickedButton.setBackgroundColor(colorBlue);
         }
-
         // Устанавливаем новую последнюю нажатую кнопку
         lastClickedButton = button;
 
@@ -290,13 +328,15 @@ public class MainTextAcrivity extends AppCompatActivity {
         button.setBackgroundColor(colorGold);
     }
 
-        private void changeButtonColorMulti (Button button) {
-            if (button.getDrawingCacheBackgroundColor() == colorBlue) {
-                button.setBackgroundColor(colorGold);
-            } else {
-                button.setBackgroundColor(colorBlue);
-            }
+    private void changeButtonColorMulti(Button button) {
+        boolean isButtonClicked = false;
+        if (!isButtonClicked) {
+            button.setBackgroundColor(colorGold);
         }
+        if (isButtonClicked) {
+            button.setBackgroundColor(colorBlue);
+        }
+    }
 
     private void setDefaultColors(int color){
         Answer1.setBackgroundColor(color);
@@ -304,7 +344,6 @@ public class MainTextAcrivity extends AppCompatActivity {
         Answer3.setBackgroundColor(color);
         Answer4.setBackgroundColor(color);
     }
-
 
     @Override
     protected void onResume() {

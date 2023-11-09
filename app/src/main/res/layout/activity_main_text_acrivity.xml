@@ -51,7 +51,9 @@
             android:layout_marginTop="30dp"
             android:fontFamily="@font/exo_2_bold"
             android:text="А"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:backgroundTint="@color/Blue"
+            />
 
         <Button
             android:id="@+id/Answer2"
@@ -63,7 +65,9 @@
             android:layout_marginTop="30dp"
             android:fontFamily="@font/exo_2_bold"
             android:text="B"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:backgroundTint="@color/Blue"
+            />
 
         <Button
             android:id="@+id/Answer4"
@@ -75,7 +79,9 @@
             android:layout_marginTop="30dp"
             android:fontFamily="@font/exo_2_bold"
             android:text="D"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:backgroundTint="@color/Blue"
+            />
 
         <Button
             android:id="@+id/Answer3"
@@ -87,7 +93,9 @@
             android:layout_marginTop="30dp"
             android:fontFamily="@font/exo_2_bold"
             android:text="C"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:backgroundTint="@color/Blue"
+            />
 
     </RelativeLayout>
 
