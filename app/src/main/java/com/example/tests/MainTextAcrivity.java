@@ -30,15 +30,19 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
-public class MainTextAcrivity extends AppCompatActivity {
+public class MainTextAcrivity extends AppCompatActivity{
+
     int CurrentQuestion = 0;
+    private Map<Button, Boolean> buttonStates = new HashMap<>();
+    private boolean isClickedButton = false;
     Random random = new Random();
     private Button lastClickedButton; // Последняя нажатая кнопка
     Button PreviousQuestion, NextQuestion, Answer1, Answer2, Answer3, Answer4;
-
     int colorGray2, colorBlue, colorGold;
     int currentQuestionIndex = 1; // Индекс текущего вопроса
 
@@ -261,7 +265,6 @@ public class MainTextAcrivity extends AppCompatActivity {
         Answer1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isButtonClicked = false;
                 Question question = questionsList.get(currentQuestionIndex);
                 QuestionType type = question.getQuestionType();
                 if (type == QuestionType.SINGLE_CHOICE){
@@ -275,10 +278,8 @@ public class MainTextAcrivity extends AppCompatActivity {
         Answer2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isButtonClicked = false;
                 Question question = questionsList.get(currentQuestionIndex);
                 QuestionType type = question.getQuestionType();
-                Log.d("Answer2", "Type " + type);
                 if (type == QuestionType.SINGLE_CHOICE){
                     changeButtonColorSingle((Button) view);
                 } else if (type == QuestionType.MULTIPLE_CHOICE) {
@@ -290,7 +291,6 @@ public class MainTextAcrivity extends AppCompatActivity {
         Answer3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isButtonClicked = false;
                 Question question = questionsList.get(currentQuestionIndex);
                 QuestionType type = question.getQuestionType();
                 if (type == QuestionType.SINGLE_CHOICE){
@@ -304,8 +304,6 @@ public class MainTextAcrivity extends AppCompatActivity {
         Answer4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isButtonClicked = false;
-                int count = 0;
                 Question question = questionsList.get(currentQuestionIndex);
                 QuestionType type = question.getQuestionType();
                 if (type == QuestionType.SINGLE_CHOICE){
@@ -329,13 +327,25 @@ public class MainTextAcrivity extends AppCompatActivity {
     }
 
     private void changeButtonColorMulti(Button button) {
-        boolean isButtonClicked = false;
-        if (!isButtonClicked) {
-            button.setBackgroundColor(colorGold);
-        }
-        if (isButtonClicked) {
-            button.setBackgroundColor(colorBlue);
-        }
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("ButtonClick", "Button clicked");
+                boolean isClicked = getButtonState(button);
+                if (!isClicked) {
+                    button.setBackgroundColor(colorGold);
+                    setButtonState(button, true);
+                    Log.d("ButtonState", "Changed to gold");
+                } else {
+                    button.setBackgroundColor(colorBlue);
+                    setButtonState(button, false);
+                    Log.d("ButtonState", "Changed to blue");
+                }
+            }
+        });
+
+        // Устанавливаем начальное состояние кнопки (например, false, если по умолчанию кнопка не нажата)
+        setButtonState(button, false);
     }
 
     private void setDefaultColors(int color){
@@ -350,4 +360,14 @@ public class MainTextAcrivity extends AppCompatActivity {
         super.onResume();
 
     }
+
+    private boolean getButtonState(Button button) {
+        return buttonStates.getOrDefault(button, false);
+    }
+
+    private void setButtonState(Button button, boolean state) {
+        buttonStates.put(button, state);
+    }
+
+
 }
