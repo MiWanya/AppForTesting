@@ -10,6 +10,7 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +35,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import okhttp3.ResponseBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainTextAcrivity extends AppCompatActivity{
 
@@ -92,75 +99,111 @@ public class MainTextAcrivity extends AppCompatActivity{
             }
         });
 
-        try {
-            // Открываем файл в папке assets
-            InputStream inputStream = getAssets().open("questions.txt");
-
-            // Создаем InputStreamReader для чтения текста из InputStream
-            InputStreamReader reader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(reader);
-
-            // Переменные для хранения вопросов, ответов и правильных ответов
-            String question = "";
-            List<String> options = new ArrayList<>();
-            List<String> correctAnswers = new ArrayList<>();
-            QuestionType questionType = QuestionType.SINGLE_CHOICE;
-
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                if (line.startsWith("$ ")) {
-                    // Это строка с текстом вопроса
-                    question = line.substring(2);
-                } else if (line.startsWith("^ ")) {
-                    // Это строка с вариантами ответов и правильными ответами
-                    String content = line.substring(2);
-                    String[] parts = content.split(",");
-
-                    List<String> questionOptions = new ArrayList<>();
-                    List<String> questionCorrectAnswers = new ArrayList<>();
-
-                    for (String part : parts) {
-                        if (part.startsWith("*")) {
-                            questionCorrectAnswers.add(part.substring(1));
-                        } else {
-                            questionOptions.add(part);
-                        }
-                    }
-
-                    options.addAll(questionOptions);
-
-                    correctAnswers.addAll(questionCorrectAnswers);
-                }else if (line.startsWith("* ")){
-                    String content = line.substring(2);
-                    String[] parts = content.split(",");
-
-                    if (parts.length > 1) {
-                        questionType = QuestionType.MULTIPLE_CHOICE;
-                    } else {
-                        questionType = QuestionType.SINGLE_CHOICE;
-                    }
-                } else if (line.isEmpty()) {
-                    // Пустая строка обозначает конец вопроса
-                    Question question1 = new Question(question, questionType, new ArrayList<>(options), new ArrayList<>(correctAnswers));
-                    questionsList.add(question1);
-
-                    // Очищаем переменные для следующего вопроса
-                    question = "";
-                    options.clear();
-                    correctAnswers.clear();
-                    questionType = null;
-                }
+        new FileDownloadTask(new FileDownload.FileDownloadListener() {
+            @Override
+            public void onDownloadComplete(ResponseBody responseBody) {
+                // Обработка завершения загрузки в основном потоке, если необходимо
             }
 
-            // Закрываем потоки
-            bufferedReader.close();
-            reader.close();
-            inputStream.close();
+            @Override
+            public void onDownloadFailed() {
+                // Обработка ошибок в основном потоке, если необходимо
+            }
+        }).execute();
 
-            // Теперь у вас есть список вопросов questionsList, который вы можете использовать в вашем приложении.
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            FileDownloadApi fileDownloadApi = RetrofitClient.getClient().create(FileDownloadApi.class);
+            Log.d("FileDownloadApi", "fileDownloadApi sucsed");
+            Call<ResponseBody> call = fileDownloadApi.downloadFile("https://drive.google.com/uc?id=1W669YuIDmEqhplKJrpyl4tuPdWpL3RKL");
+            Log.d("Call<ResponseBody> ", "call = googleDrive");
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        ResponseBody responseBody = response.body();
+
+                        // Теперь вы можете использовать responseBody для чтения данных
+                        if (responseBody != null) {
+                            try {
+                                InputStream inputStream = responseBody.byteStream();
+                                InputStreamReader reader = new InputStreamReader(inputStream);
+                                BufferedReader bufferedReader = new BufferedReader(reader);
+
+                                // Переменные для хранения вопросов, ответов и правильных ответов
+                                String question = "";
+                                List<String> options = new ArrayList<>();
+                                List<String> correctAnswers = new ArrayList<>();
+                                QuestionType questionType = QuestionType.SINGLE_CHOICE;
+
+                                String line;
+                                while ((line = bufferedReader.readLine()) != null) {
+                                    if (line.startsWith("$ ")) {
+                                        // Это строка с текстом вопроса
+                                        question = line.substring(2);
+                                    } else if (line.startsWith("^ ")) {
+                                        // Это строка с вариантами ответов и правильными ответами
+                                        String content = line.substring(2);
+                                        String[] parts = content.split(",");
+
+                                        List<String> questionOptions = new ArrayList<>();
+                                        List<String> questionCorrectAnswers = new ArrayList<>();
+
+                                        for (String part : parts) {
+                                            if (part.startsWith("*")) {
+                                                questionCorrectAnswers.add(part.substring(1));
+                                            } else {
+                                                questionOptions.add(part);
+                                            }
+                                        }
+
+                                        options.addAll(questionOptions);
+
+                                        correctAnswers.addAll(questionCorrectAnswers);
+                                    } else if (line.startsWith("* ")) {
+                                        String content = line.substring(2);
+                                        String[] parts = content.split(",");
+
+                                        if (parts.length > 1) {
+                                            questionType = QuestionType.MULTIPLE_CHOICE;
+                                        } else {
+                                            questionType = QuestionType.SINGLE_CHOICE;
+                                        }
+                                    } else if (line.isEmpty()) {
+                                        // Пустая строка обозначает конец вопроса
+                                        Question question1 = new Question(question, questionType, new ArrayList<>(options), new ArrayList<>(correctAnswers));
+                                        questionsList.add(question1);
+
+                                        // Очищаем переменные для следующего вопроса
+                                        question = "";
+                                        options.clear();
+                                        correctAnswers.clear();
+                                        questionType = null;
+                                    }
+                                }
+
+                                // Закрыть потоки, когда они больше не нужны
+                                bufferedReader.close();
+                                reader.close();
+                                inputStream.close();
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Log.e("FileDownload", "Download failed: " + e.getMessage());
+                            }
+                        }
+                    } else {
+                        // Обработка неуспешного ответа
+                        Log.e("FileDownload", "Unsuccessful response");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    // Обработка ошибки
+                    Log.e("FileDownload", "Download failed: " + t.getMessage());
+                }
+            });
+
+
 
         if (!questionsList.isEmpty()) {
             if (currentQuestionIndex < questionsList.size()) {
@@ -228,13 +271,20 @@ public class MainTextAcrivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 // Переход к следующему вопросу
-                if (currentQuestionIndex < questionsList.size()) {
+                if (currentQuestionIndex < 51) {
                     currentQuestionIndex++; // Переключаемся на следующий вопрос
 
                     if (currentQuestionIndex < questionsList.size()) {
                         Question question = questionsList.get(currentQuestionIndex);
                         questionTextView.setText(question.GetQuestionText());
-
+                        Question nextquestion;
+                        try {
+                            nextquestion = questionsList.get(currentQuestionIndex+1);
+                            Log.d("Nextquestion", "Text: " + nextquestion.GetQuestionText() + questionsList.toArray().length + "Current question: " + currentQuestionIndex);
+                        }
+                        catch (IndexOutOfBoundsException exception) {
+                            Log.d("Nextquestion", "Text: not found " + "Current question: " + currentQuestionIndex);
+                        }
                         StringBuilder optionsText = new StringBuilder();
                         List<String> options = question.getOptions();
                         for (int i = 0; i < options.size(); i++) {
@@ -251,7 +301,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                     }
                 }
                 // Последний вопрос
-                if (currentQuestionIndex == questionsList.size() - 1){
+                if (currentQuestionIndex == 50){
                     NextQuestion.setBackgroundColor(colorGold);
                 }
                 // Стандартный цвет кнопок
@@ -370,4 +420,36 @@ public class MainTextAcrivity extends AppCompatActivity{
     }
 
 
+    public class FileDownloadTask extends AsyncTask<Void, Void, Void> {
+        private final FileDownload.FileDownloadListener listener;
+
+        public FileDownloadTask(FileDownload.FileDownloadListener listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            FileDownload.downloadFile("download", new FileDownload.FileDownloadListener() {
+                @Override
+                public void onDownloadComplete(ResponseBody responseBody) {
+                    // Чтение файла из responseBody и обработка данных
+                    // responseBody.byteStream() предоставляет InputStream для файла
+                    Log.d("FileDownload", "FileDownloaded succeeded");
+                    if (listener != null) {
+                        listener.onDownloadComplete(responseBody);
+                    }
+                }
+
+                @Override
+                public void onDownloadFailed() {
+                    // Обработка ошибок при загрузке файла
+                    Log.d("FileDownload", "Failed");
+                    if (listener != null) {
+                        listener.onDownloadFailed();
+                    }
+                }
+            });
+            return null;
+        }
+    }
 }
