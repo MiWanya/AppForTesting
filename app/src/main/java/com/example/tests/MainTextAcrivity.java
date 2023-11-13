@@ -44,6 +44,8 @@ import retrofit2.Response;
 
 public class MainTextAcrivity extends AppCompatActivity{
 
+    List<Question> questionsList = new ArrayList<>();
+    QuestionType type = null;
     int CurrentQuestion = 0;
     private Map<Button, Boolean> buttonStates = new HashMap<>();
     private boolean isClickedButton = false;
@@ -111,123 +113,97 @@ public class MainTextAcrivity extends AppCompatActivity{
             }
         }).execute();
 
-            FileDownloadApi fileDownloadApi = RetrofitClient.getClient().create(FileDownloadApi.class);
-            Log.d("FileDownloadApi", "fileDownloadApi sucsed");
-            Call<ResponseBody> call = fileDownloadApi.downloadFile("https://drive.google.com/uc?id=1W669YuIDmEqhplKJrpyl4tuPdWpL3RKL");
-            Log.d("Call<ResponseBody> ", "call = googleDrive");
-            call.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if (response.isSuccessful()) {
-                        ResponseBody responseBody = response.body();
+        FileDownloadApi fileDownloadApi = RetrofitClient.getClient().create(FileDownloadApi.class);
+        Log.d("FileDownloadApi", "fileDownloadApi sucsed");
+        Call<ResponseBody> call = fileDownloadApi.downloadFile("https://drive.google.com/uc?id=1W669YuIDmEqhplKJrpyl4tuPdWpL3RKL");
+        Log.d("Call<ResponseBody> ", "call = googleDrive");
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    ResponseBody responseBody = response.body();
 
-                        // Теперь вы можете использовать responseBody для чтения данных
-                        if (responseBody != null) {
-                            try {
-                                InputStream inputStream = responseBody.byteStream();
-                                InputStreamReader reader = new InputStreamReader(inputStream);
-                                BufferedReader bufferedReader = new BufferedReader(reader);
+                    // Теперь вы можете использовать responseBody для чтения данных
+                    if (responseBody != null) {
+                        try {
+                            InputStream inputStream = responseBody.byteStream();
+                            InputStreamReader reader = new InputStreamReader(inputStream);
+                            BufferedReader bufferedReader = new BufferedReader(reader);
 
-                                // Переменные для хранения вопросов, ответов и правильных ответов
-                                String question = "";
-                                List<String> options = new ArrayList<>();
-                                List<String> correctAnswers = new ArrayList<>();
-                                QuestionType questionType = QuestionType.SINGLE_CHOICE;
+                            // Переменные для хранения вопросов, ответов и правильных ответов
+                            String question = "";
+                            List<String> options = new ArrayList<>();
+                            List<String> correctAnswers = new ArrayList<>();
+                            QuestionType questionType = QuestionType.SINGLE_CHOICE;
 
-                                String line;
-                                while ((line = bufferedReader.readLine()) != null) {
-                                    if (line.startsWith("$ ")) {
-                                        // Это строка с текстом вопроса
-                                        question = line.substring(2);
-                                    } else if (line.startsWith("^ ")) {
-                                        // Это строка с вариантами ответов и правильными ответами
-                                        String content = line.substring(2);
-                                        String[] parts = content.split(",");
+                            String line;
+                            while ((line = bufferedReader.readLine()) != null) {
+                                if (line.startsWith("$ ")) {
+                                    // Это строка с текстом вопроса
+                                    question = line.substring(2);
+                                } else if (line.startsWith("^ ")) {
+                                    // Это строка с вариантами ответов и правильными ответами
+                                    String content = line.substring(2);
+                                    String[] parts = content.split(",");
 
-                                        List<String> questionOptions = new ArrayList<>();
-                                        List<String> questionCorrectAnswers = new ArrayList<>();
+                                    List<String> questionOptions = new ArrayList<>();
+                                    List<String> questionCorrectAnswers = new ArrayList<>();
 
-                                        for (String part : parts) {
-                                            if (part.startsWith("*")) {
-                                                questionCorrectAnswers.add(part.substring(1));
-                                            } else {
-                                                questionOptions.add(part);
-                                            }
-                                        }
-
-                                        options.addAll(questionOptions);
-
-                                        correctAnswers.addAll(questionCorrectAnswers);
-                                    } else if (line.startsWith("* ")) {
-                                        String content = line.substring(2);
-                                        String[] parts = content.split(",");
-
-                                        if (parts.length > 1) {
-                                            questionType = QuestionType.MULTIPLE_CHOICE;
+                                    for (String part : parts) {
+                                        if (part.startsWith("*")) {
+                                            questionCorrectAnswers.add(part.substring(1));
                                         } else {
-                                            questionType = QuestionType.SINGLE_CHOICE;
+                                            questionOptions.add(part);
                                         }
-                                    } else if (line.isEmpty()) {
-                                        // Пустая строка обозначает конец вопроса
-                                        Question question1 = new Question(question, questionType, new ArrayList<>(options), new ArrayList<>(correctAnswers));
-                                        questionsList.add(question1);
-
-                                        // Очищаем переменные для следующего вопроса
-                                        question = "";
-                                        options.clear();
-                                        correctAnswers.clear();
-                                        questionType = null;
                                     }
+
+                                    options.addAll(questionOptions);
+
+                                    correctAnswers.addAll(questionCorrectAnswers);
+                                } else if (line.startsWith("* ")) {
+                                    String content = line.substring(2);
+                                    String[] parts = content.split(",");
+
+                                    if (parts.length > 1) {
+                                        questionType = QuestionType.MULTIPLE_CHOICE;
+                                    } else {
+                                        questionType = QuestionType.SINGLE_CHOICE;
+                                    }
+                                } else if (line.isEmpty()) {
+                                    // Пустая строка обозначает конец вопроса
+                                    Question question1 = new Question(question, questionType, new ArrayList<>(options), new ArrayList<>(correctAnswers));
+                                    questionsList.add(question1);
+
+                                    // Очищаем переменные для следующего вопроса
+                                    question = "";
+                                    options.clear();
+                                    correctAnswers.clear();
+                                    questionType = null;
                                 }
-
-                                // Закрыть потоки, когда они больше не нужны
-                                bufferedReader.close();
-                                reader.close();
-                                inputStream.close();
-
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                Log.e("FileDownload", "Download failed: " + e.getMessage());
                             }
+
+                            // Закрыть потоки, когда они больше не нужны
+                            bufferedReader.close();
+                            reader.close();
+                            inputStream.close();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Log.e("FileDownload", "Download failed: " + e.getMessage());
                         }
-                    } else {
-                        // Обработка неуспешного ответа
-                        Log.e("FileDownload", "Unsuccessful response");
                     }
+                } else {
+                    // Обработка неуспешного ответа
+                    Log.e("FileDownload", "Unsuccessful response");
                 }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    // Обработка ошибки
-                    Log.e("FileDownload", "Download failed: " + t.getMessage());
-                }
-            });
-
-
-
-        if (!questionsList.isEmpty()) {
-            if (currentQuestionIndex < questionsList.size()) {
-                Log.d("Questions", "Number of questions: " + questionsList.size());
-                Question question = questionsList.get(currentQuestionIndex);
-                questionTextView.setText(question.GetQuestionText());
-
-                // Создаем строку для вариантов ответов
-                StringBuilder optionsText = new StringBuilder();
-                List<String> options = question.getOptions();
-                for (int i = 0; i < options.size(); i++) {
-                    optionsText.append((i + 1) + ". " + options.get(i)); // Нумерация вариантов ответов
-                    if (i < options.size() - 1) {
-                        optionsText.append("\n"); // Перенос строки между вариантами
-                    }
-                }
-                // Устанавливаем текст вариантов ответов
-                optionTextView.setText(optionsText.toString());
-            } else {
-                // Покажите диалоговое окно
-                AlertDialog dialog = builder.create();
-                dialog.show();
             }
-        }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                // Обработка ошибки
+                Log.e("FileDownload", "Download failed: " + t.getMessage());
+            }
+        });
 
         PreviousQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -364,7 +340,7 @@ public class MainTextAcrivity extends AppCompatActivity{
             }
         });
     }
-        private void changeButtonColorSingle (Button button) {
+    private void changeButtonColorSingle (Button button) {
         // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
         if (lastClickedButton != null) {
             lastClickedButton.setBackgroundColor(colorBlue);
@@ -377,25 +353,18 @@ public class MainTextAcrivity extends AppCompatActivity{
     }
 
     private void changeButtonColorMulti(Button button) {
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("ButtonClick", "Button clicked");
-                boolean isClicked = getButtonState(button);
-                if (!isClicked) {
-                    button.setBackgroundColor(colorGold);
-                    setButtonState(button, true);
-                    Log.d("ButtonState", "Changed to gold");
-                } else {
-                    button.setBackgroundColor(colorBlue);
-                    setButtonState(button, false);
-                    Log.d("ButtonState", "Changed to blue");
-                }
-            }
-        });
 
-        // Устанавливаем начальное состояние кнопки (например, false, если по умолчанию кнопка не нажата)
-        setButtonState(button, false);
+        Log.d("ButtonClick", "Button clicked");
+        boolean isClicked = getButtonState(button);
+        if (!isClicked) {
+            button.setBackgroundColor(colorGold);
+            setButtonState(button, true);
+            Log.d("ButtonState", "Changed to gold");
+        } else {
+            button.setBackgroundColor(colorBlue);
+            setButtonState(button, false);
+            Log.d("ButtonState", "Changed to blue");
+        }
     }
 
     private void setDefaultColors(int color){
@@ -452,4 +421,37 @@ public class MainTextAcrivity extends AppCompatActivity{
             return null;
         }
     }
+
+    private void loadQuestions() {
+
+    }
+
+    //@Override
+    //protected void onStart() {
+//
+  //      if (!questionsList.isEmpty()) {
+    //        if (currentQuestionIndex < questionsList.size()) {
+      //          Log.d("Questions", "Number of questions: " + questionsList.size());
+        //        Question question = questionsList.get(currentQuestionIndex);
+          //      questionTextView.setText(question.GetQuestionText());
+//
+  //              // Создаем строку для вариантов ответов
+    //            StringBuilder optionsText = new StringBuilder();
+      //          List<String> options = question.getOptions();
+        //        for (int i = 0; i < options.size(); i++) {
+          //          optionsText.append((i + 1) + ". " + options.get(i)); // Нумерация вариантов ответов
+            //        if (i < options.size() - 1) {
+              //          optionsText.append("\n"); // Перенос строки между вариантами
+                //    }
+//                }
+  //              // Устанавливаем текст вариантов ответов
+    //            optionTextView.setText(optionsText.toString());
+      //      } else {
+        //        // Покажите диалоговое окно
+          //      AlertDialog dialog = builder.create();
+            //    dialog.show();
+//            }
+  //      }
+    //    super.onStart();
+   // }
 }

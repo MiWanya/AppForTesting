@@ -38,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
         new DownloadTxtFile(this).execute("https://github.com/MiWanya/AppForTesting/blob/master/app/src/main/assets/questions.txt");
         new ReadTxtFile(this).execute();
 
-
-
         Intent intent = new Intent(this, MainTextAcrivity.class);
         startActivity(intent);
     }
