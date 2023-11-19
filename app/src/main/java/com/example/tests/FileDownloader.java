@@ -9,9 +9,11 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import android.os.AsyncTask;
+import android.widget.ProgressBar;
 
 public class FileDownloader {
     private final String url;
+
     private final String targetFilePath;
 
     public FileDownloader(String url, String targetFilePath) {

@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -44,7 +45,7 @@ import retrofit2.Response;
 
 public class MainTextAcrivity extends AppCompatActivity{
 
-    List<Question> questionsList = new ArrayList<>();
+
     QuestionType type = null;
     int CurrentQuestion = 0;
     private Map<Button, Boolean> buttonStates = new HashMap<>();
@@ -54,11 +55,15 @@ public class MainTextAcrivity extends AppCompatActivity{
     Button PreviousQuestion, NextQuestion, Answer1, Answer2, Answer3, Answer4;
     int colorGray2, colorBlue, colorGold;
     int currentQuestionIndex = 1; // Индекс текущего вопроса
+    List<Question> questionsList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_text_acrivity);
+
+        boolean isFileDownloaded = false;
 
         // Получаем цвета из ресурсов
         colorGray2 = ContextCompat.getColor(this, R.color.Gray2);
@@ -81,9 +86,13 @@ public class MainTextAcrivity extends AppCompatActivity{
         PreviousQuestion.setBackgroundColor(colorGray2);
         NextQuestion.setBackgroundColor(colorBlue);
 
-        // Создаем список вопросов
-        List<Question> questionsList = new ArrayList<>();
-        QuestionType type = null;
+        // Для эффекта загрузки
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+        RelativeLayout RelativeQuestions = findViewById(R.id.Question);
+        RelativeLayout RelativeButtons = findViewById(R.id.RelativeButtons);
+
+        // Показать ProgressBar при начале загрузки данных
+        progressBar.setVisibility(View.VISIBLE);
 
         // Создайте диалоговое окно с вопросом
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -186,6 +195,35 @@ public class MainTextAcrivity extends AppCompatActivity{
                             bufferedReader.close();
                             reader.close();
                             inputStream.close();
+                            if (currentQuestionIndex < questionsList.size()) {
+                                Log.d("Questions", "Number of questions: " + questionsList.size());
+                                Question question1 = questionsList.get(currentQuestionIndex);
+                                questionTextView.setText(question1.GetQuestionText());
+
+                                // Создаем строку для вариантов ответов
+                                StringBuilder optionsText = new StringBuilder();
+                                List<String> options1 = question1.getOptions();
+                                for (int i = 0; i < options.size(); i++) {
+                                    optionsText.append((i + 1) + ". " + options.get(i)); // Нумерация вариантов ответов
+                                    if (i < options.size() - 1) {
+                                        optionsText.append("\n"); // Перенос строки между вариантами
+                                    }
+                                }
+                                // Устанавливаем текст вариантов ответов
+                                optionTextView.setText(optionsText.toString());
+                            } else {
+                                // Покажите диалоговое окно
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
+                            }
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressBar.setVisibility(View.GONE);
+                                    RelativeQuestions.setVisibility(View.VISIBLE);
+                                    RelativeButtons.setVisibility(View.VISIBLE);
+                                }
+                            });
 
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -197,7 +235,6 @@ public class MainTextAcrivity extends AppCompatActivity{
                     Log.e("FileDownload", "Unsuccessful response");
                 }
             }
-
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 // Обработка ошибки
@@ -353,7 +390,6 @@ public class MainTextAcrivity extends AppCompatActivity{
     }
 
     private void changeButtonColorMulti(Button button) {
-
         Log.d("ButtonClick", "Button clicked");
         boolean isClicked = getButtonState(button);
         if (!isClicked) {
@@ -421,37 +457,9 @@ public class MainTextAcrivity extends AppCompatActivity{
             return null;
         }
     }
-
-    private void loadQuestions() {
+    // Метод для отображения вопросов на активности
+    private void showQuestions(List<Question> questions) {
+        // ... (ваш существующий код для отображения вопросов)
 
     }
-
-    //@Override
-    //protected void onStart() {
-//
-  //      if (!questionsList.isEmpty()) {
-    //        if (currentQuestionIndex < questionsList.size()) {
-      //          Log.d("Questions", "Number of questions: " + questionsList.size());
-        //        Question question = questionsList.get(currentQuestionIndex);
-          //      questionTextView.setText(question.GetQuestionText());
-//
-  //              // Создаем строку для вариантов ответов
-    //            StringBuilder optionsText = new StringBuilder();
-      //          List<String> options = question.getOptions();
-        //        for (int i = 0; i < options.size(); i++) {
-          //          optionsText.append((i + 1) + ". " + options.get(i)); // Нумерация вариантов ответов
-            //        if (i < options.size() - 1) {
-              //          optionsText.append("\n"); // Перенос строки между вариантами
-                //    }
-//                }
-  //              // Устанавливаем текст вариантов ответов
-    //            optionTextView.setText(optionsText.toString());
-      //      } else {
-        //        // Покажите диалоговое окно
-          //      AlertDialog dialog = builder.create();
-            //    dialog.show();
-//            }
-  //      }
-    //    super.onStart();
-   // }
 }
