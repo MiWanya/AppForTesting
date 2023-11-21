@@ -29,6 +29,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,6 +46,7 @@ import retrofit2.Response;
 
 public class MainTextAcrivity extends AppCompatActivity{
 
+    List<UserAnswer> userAnswersList = new ArrayList<>();
 
     QuestionType type = null;
     int CurrentQuestion = 0;
@@ -54,7 +56,7 @@ public class MainTextAcrivity extends AppCompatActivity{
     private Button lastClickedButton; // Последняя нажатая кнопка
     Button PreviousQuestion, NextQuestion, Answer1, Answer2, Answer3, Answer4;
     int colorGray2, colorBlue, colorGold;
-    int currentQuestionIndex = 1; // Индекс текущего вопроса
+    int currentQuestionIndex = 0; // Индекс текущего вопроса
     List<Question> questionsList = new ArrayList<>();
 
 
@@ -100,6 +102,7 @@ public class MainTextAcrivity extends AppCompatActivity{
 
         builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+
                 // Здесь можно разместить код для завершения тестирования
                 finish();
             }
@@ -195,6 +198,8 @@ public class MainTextAcrivity extends AppCompatActivity{
                             bufferedReader.close();
                             reader.close();
                             inputStream.close();
+
+                            // Отобразить вопросы
                             if (currentQuestionIndex < questionsList.size()) {
                                 Log.d("Questions", "Number of questions: " + questionsList.size());
                                 Question question1 = questionsList.get(currentQuestionIndex);
@@ -204,7 +209,8 @@ public class MainTextAcrivity extends AppCompatActivity{
                                 StringBuilder optionsText = new StringBuilder();
                                 List<String> options1 = question1.getOptions();
                                 for (int i = 0; i < options.size(); i++) {
-                                    optionsText.append((i + 1) + ". " + options.get(i)); // Нумерация вариантов ответов
+                                    optionsText.append((i + 1) + ". " + options1.get(i)); // Нумерация вариантов ответов
+                                    Log.d("OptionText", "Text: " + options1);
                                     if (i < options.size() - 1) {
                                         optionsText.append("\n"); // Перенос строки между вариантами
                                     }
@@ -267,13 +273,8 @@ public class MainTextAcrivity extends AppCompatActivity{
                     NextQuestion.setBackgroundColor(colorBlue);
                 }
                 // Первый вопрос
-                if (currentQuestionIndex == 1){
-                    PreviousQuestion.setBackgroundColor(colorGray2);
-                }
-                // Возврат назад с первого вопроса
                 if (currentQuestionIndex == 0){
-                    Intent intent = new Intent(MainTextAcrivity.this, MainActivity.class);
-                    startActivity(intent);
+                    PreviousQuestion.setBackgroundColor(colorGray2);
                 }
 
                 setDefaultColors(colorBlue);
@@ -284,10 +285,10 @@ public class MainTextAcrivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 // Переход к следующему вопросу
-                if (currentQuestionIndex < 51) {
+                if (currentQuestionIndex < 5) {
                     currentQuestionIndex++; // Переключаемся на следующий вопрос
 
-                    if (currentQuestionIndex < questionsList.size()) {
+                    if (currentQuestionIndex < 5) {
                         Question question = questionsList.get(currentQuestionIndex);
                         questionTextView.setText(question.GetQuestionText());
                         Question nextquestion;
@@ -314,7 +315,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                     }
                 }
                 // Последний вопрос
-                if (currentQuestionIndex == 50){
+                if (currentQuestionIndex == 5){
                     NextQuestion.setBackgroundColor(colorGold);
                 }
                 // Стандартный цвет кнопок
@@ -330,6 +331,7 @@ public class MainTextAcrivity extends AppCompatActivity{
             public void onClick(View view) {
                 Question question = questionsList.get(currentQuestionIndex);
                 QuestionType type = question.getQuestionType();
+
                 if (type == QuestionType.SINGLE_CHOICE){
                     changeButtonColorSingle((Button) view);
                 } else if (type == QuestionType.MULTIPLE_CHOICE) {
@@ -343,6 +345,7 @@ public class MainTextAcrivity extends AppCompatActivity{
             public void onClick(View view) {
                 Question question = questionsList.get(currentQuestionIndex);
                 QuestionType type = question.getQuestionType();
+
                 if (type == QuestionType.SINGLE_CHOICE){
                     changeButtonColorSingle((Button) view);
                 } else if (type == QuestionType.MULTIPLE_CHOICE) {
@@ -356,6 +359,7 @@ public class MainTextAcrivity extends AppCompatActivity{
             public void onClick(View view) {
                 Question question = questionsList.get(currentQuestionIndex);
                 QuestionType type = question.getQuestionType();
+
                 if (type == QuestionType.SINGLE_CHOICE){
                     changeButtonColorSingle((Button) view);
                 } else if (type == QuestionType.MULTIPLE_CHOICE) {
@@ -457,9 +461,18 @@ public class MainTextAcrivity extends AppCompatActivity{
             return null;
         }
     }
-    // Метод для отображения вопросов на активности
-    private void showQuestions(List<Question> questions) {
-        // ... (ваш существующий код для отображения вопросов)
 
+
+
+    // Метод для поиска вопроса по идентификатору
+    private Question getQuestionById(int questionId) {
+        for (Question question : questionsList) {
+            if (question.getId() == questionId) {
+                return question;
+            }
+        }
+        return null;
     }
+
+
 }

@@ -5,6 +5,7 @@ import android.widget.TextView;
 import java.util.List;
 
 public class Question {
+    private int id;
     private String questionText;
     private List<String> options;
     private List<String> correctAnswer;
@@ -17,7 +18,9 @@ public class Question {
         this.options = options;
         this.correctAnswer = correctAnswer;
     }
-
+    public int getId() {
+        return id;
+    }
     //Получить текст вопроса
     public String GetQuestionText(){ //Получить вопрос
         return questionText;
@@ -42,6 +45,18 @@ public class Question {
     public List<String> getOptions(){ //Получить варианты ответов
         return options;
     }
+
+    // Получить вариант ответов
+    public String getOption(int index) {
+        // Проверка, чтобы индекс не выходил за пределы списка вариантов
+        if (index >= 0 && index < options.size()) {
+            return options.get(index);
+        } else {
+            // Обработка ошибки, например, возврат null или пустой строки
+            return "";
+        }
+    }
+
 
     // Установить варианты ответов
     public void setOptions (List<String> options){ //Задать варианты ответов

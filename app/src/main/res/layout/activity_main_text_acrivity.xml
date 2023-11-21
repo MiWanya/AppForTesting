@@ -7,6 +7,46 @@
     android:layout_height="match_parent"
     tools:context=".MainTextAcrivity">
 
+    <RelativeLayout
+        android:id="@+id/RelativeButtons"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        >
+
+        <Button
+            android:id="@+id/PreviosQuestion"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="25sp"
+            android:layout_marginBottom="10sp"
+            android:fontFamily="@font/exo_2_bold"
+            android:text="@string/Back"
+            android:textColor="@color/white"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentLeft="true"
+
+            />
+
+        <Button
+            android:id="@+id/NextQuestion"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:fontFamily="@font/exo_2_bold"
+            android:layout_marginHorizontal="25sp"
+            android:layout_marginBottom="10sp"
+            android:text="@string/Continue"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            />
+
+    </RelativeLayout>
+
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -15,7 +55,6 @@
         android:layout_height="575dp"
         tools:context=".MainTextAcrivity"
         android:layout_above="@+id/RelativeButtons"
-
         >
 
     <RelativeLayout
@@ -121,45 +160,7 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
-    <RelativeLayout
-        android:id="@+id/RelativeButtons"
-        android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:visibility="invisible"
-        >
 
-        <Button
-            android:id="@+id/PreviosQuestion"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="25sp"
-            android:layout_marginBottom="10sp"
-            android:fontFamily="@font/exo_2_bold"
-            android:text="@string/Back"
-            android:textColor="@color/white"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-            android:layout_alignParentLeft="true"
-
-            />
-
-        <Button
-            android:id="@+id/NextQuestion"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:fontFamily="@font/exo_2_bold"
-            android:layout_marginHorizontal="25sp"
-            android:layout_marginBottom="10sp"
-            android:text="@string/Continue"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-            />
-
-    </RelativeLayout>
 
 
 </RelativeLayout>
