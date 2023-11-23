@@ -73,6 +73,13 @@ public class Question {
         this.correctAnswer = correctAnswer;
     }
 
+    @Override
+    public String toString() {
+        return "UserAnswer{" +
+                ", selectedOptions=" + correctAnswer +
+                '}';
+    }
+
 }
 
 enum QuestionType { //Типы вопросов
