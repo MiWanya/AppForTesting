@@ -33,4 +33,16 @@ public class UserAnswer {
                 ", selectedOptions=" + selectedOptions +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        UserAnswer otherAnswer = (UserAnswer) obj;
+
+        // Сравниваем содержимое объектов
+        return Objects.equals(this.selectedOptions, otherAnswer.selectedOptions);
+    }
+
 }

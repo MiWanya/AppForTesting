@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,6 +47,8 @@ import retrofit2.Response;
 
 public class MainTextAcrivity extends AppCompatActivity{
 
+    Stack userAnswersStack = new Stack();
+
     int correctAnswers, failedAnsweers = 0;
     List<UserAnswer> userAnswersList = new ArrayList<>();
     Boolean answer1 = false,
@@ -60,6 +63,7 @@ public class MainTextAcrivity extends AppCompatActivity{
     int colorGray2, colorBlue, colorGold;
     int currentQuestionIndex = 0; // Индекс текущего вопроса
     List<Question> questionsList = new ArrayList<>();
+    int AllQuestions = 5;
 
 
     @Override
@@ -155,10 +159,10 @@ public class MainTextAcrivity extends AppCompatActivity{
                                 if (line.startsWith("$ ")) {
                                     // Это строка с текстом вопроса
                                     question = line.substring(2);
-                                } else if (line.startsWith("^")) {
+                                } else if (line.startsWith("^ ")) {
                                     // Это строка с вариантами ответов и правильными ответами
                                     String content = line.substring(2);
-                                    String[] parts = content.split(",");
+                                    String[] parts = content.split(", ");
 
                                     List<String> questionOptions = new ArrayList<>();
                                     List<String> questionCorrectAnswers = new ArrayList<>();
@@ -191,6 +195,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                                 } else if (line.isEmpty()) {
                                     // Пустая строка обозначает конец вопроса
                                     Question question1 = new Question(question, questionType, new ArrayList<>(options), new ArrayList<>(correctAnswers));
+
                                     questionsList.add(question1);
 
                                     // Очищаем переменные для следующего вопроса
@@ -213,11 +218,10 @@ public class MainTextAcrivity extends AppCompatActivity{
                                 questionTextView.setText(question1.GetQuestionText());
                                 List<String> correct = question1.getCorrectAnswer();
 
-
                                 // Создаем строку для вариантов ответов
                                 StringBuilder optionsText = new StringBuilder();
                                 List<String> options1 = question1.getOptions();
-                                for (int i = 0; i < options.size(); i++) {
+                                for (int i = 0; i < options1.size(); i++) {
                                     optionsText.append((i + 1) + ". " + options1.get(i)); // Нумерация вариантов ответов
                                     Log.d("OptionText", "Text: " + options1);
                                     if (i < options.size() - 1) {
@@ -276,6 +280,12 @@ public class MainTextAcrivity extends AppCompatActivity{
                         }
                     }
                     optionTextView.setText(optionsText.toString());
+
+                    if (userAnswersStack.pop() == "correctAnswer"){
+                        correctAnswers--;
+                    } else if (userAnswersStack.pop() == "failedAnswer") {
+                        failedAnsweers--;
+                    }
                 }
                 // Если есть ещё вопросы для кнопки Продолжить
                 if (currentQuestionIndex < questionsList.size()){
@@ -295,12 +305,17 @@ public class MainTextAcrivity extends AppCompatActivity{
             public void onClick(View view) {
                 // Переход к следующему вопросу
                 if (currentQuestionIndex < 5) {
-                    Question question = questionsList.get(currentQuestionIndex);
+                    Question question = questionsList.get(currentQuestionIndex + 1);
                     questionTextView.setText(question.GetQuestionText());
                     Question nextquestion;
                     QuestionType type = question.getQuestionType();
+
                     Log.d("Answer ", "Answer1: " + answer1);
                     Answer(questionsList, type);
+                    answer1 = false;
+                    answer2 = false;
+                    answer3 = false;
+                    answer4 = false;
 
                     currentQuestionIndex++; // Переключаемся на следующий вопрос
 
@@ -326,10 +341,11 @@ public class MainTextAcrivity extends AppCompatActivity{
                         // Покажите диалоговое окно
                         AlertDialog dialog = builder.create();
                         dialog.show();
+                        Log.d("Result of testing", "Correct answers: " + correctAnswers + " Failed answers: " + failedAnsweers + " Percent of correct answers: " + Percent());
                     }
                 }
                 // Последний вопрос
-                if (currentQuestionIndex == 5){
+                if (currentQuestionIndex == 4){
                     NextQuestion.setBackgroundColor(colorGold);
                 }
                 // Стандартный цвет кнопок
@@ -350,8 +366,10 @@ public class MainTextAcrivity extends AppCompatActivity{
                     // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
                     if (lastClickedButton != null) {
                         lastClickedButton.setBackgroundColor(colorBlue);
-                        answer1 = false; // Обновляем глобальную переменную
-                        Log.d(" ", "answer: " + answer1);
+                        answer1 = false;
+                        answer2 = false;
+                        answer3 = false;
+                        answer4 = false;
                     }
                     // Устанавливаем новую последнюю нажатую кнопку
                     lastClickedButton = (Button) view;
@@ -388,8 +406,10 @@ public class MainTextAcrivity extends AppCompatActivity{
                     // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
                     if (lastClickedButton != null) {
                         lastClickedButton.setBackgroundColor(colorBlue);
-                        answer2 = false; // Обновляем глобальную переменную
-                        Log.d(" ", "answer: " + answer2);
+                        answer1 = false;
+                        answer2 = false;
+                        answer3 = false;
+                        answer4 = false;
                     }
                     // Устанавливаем новую последнюю нажатую кнопку
                     lastClickedButton = (Button) view;
@@ -426,8 +446,10 @@ public class MainTextAcrivity extends AppCompatActivity{
                     // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
                     if (lastClickedButton != null) {
                         lastClickedButton.setBackgroundColor(colorBlue);
-                        answer3 = false; // Обновляем глобальную переменную
-                        Log.d(" ", "answer: " + answer3);
+                        answer1 = false;
+                        answer2 = false;
+                        answer3 = false;
+                        answer4 = false;
                     }
                     // Устанавливаем новую последнюю нажатую кнопку
                     lastClickedButton = (Button) view;
@@ -464,8 +486,10 @@ public class MainTextAcrivity extends AppCompatActivity{
                     // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
                     if (lastClickedButton != null) {
                         lastClickedButton.setBackgroundColor(colorBlue);
-                        answer4 = false; // Обновляем глобальную переменную
-                        Log.d(" ", "answer: " + answer4);
+                        answer1 = false;
+                        answer2 = false;
+                        answer3 = false;
+                        answer4 = false;
                     }
                     // Устанавливаем новую последнюю нажатую кнопку
                     lastClickedButton = (Button) view;
@@ -596,9 +620,11 @@ public class MainTextAcrivity extends AppCompatActivity{
         Question question = questionsList.get(currentQuestionIndex);
         List<String> options = question.getOptions();
         String userSelectedOption;
+
         UserAnswer answer = new UserAnswer();
         UserAnswer correctAnswer = new UserAnswer(question.getCorrectAnswer());
         List<Boolean> ans = new ArrayList<>();
+
         ans.add(answer1);
         ans.add(answer2);
         ans.add(answer3);
@@ -606,11 +632,9 @@ public class MainTextAcrivity extends AppCompatActivity{
 
         if (type == QuestionType.SINGLE_CHOICE) {
             try {
-                Log.d("If", "SINGLE_CHOICE");
                 for (int i = 0; i < ans.size(); i++) {
                     boolean answ = ans.get(i);
                     if (answ) {
-                        Log.d("answerISClicked", " answerISClicked by for");
                         String option = question.getOption(i);
                         userSelectedOption = option;
                         answer.setUserOption(userSelectedOption);
@@ -618,22 +642,41 @@ public class MainTextAcrivity extends AppCompatActivity{
                 }
             }catch (NullPointerException e){
                 e.printStackTrace();
-                Log.e("FileDownload", "Download failed: " + e.getMessage());
+            }
+        }
+        if (type == QuestionType.MULTIPLE_CHOICE){
+            try {
+                for (int i = 0; i < ans.size(); i++) {
+                    Boolean answ = ans.get(i);
+                    if (answ) {
+                        String option = question.getOption(i);
+                        userSelectedOption = option;
+                        answer.setUserOption(userSelectedOption);
+                    }
+                }
+            }catch (NullPointerException e){
+                e.printStackTrace();
             }
         }
         if (answer.equals(correctAnswer)){
             correctAnswers++;
-            Log.d("", "correctAnswers++");
+            userAnswersStack.push("correctAnswer");
+            Log.d("", "correctAnswers++" + correctAnswers);
         } else {
-            Log.d("", "correctAnswers--");
             failedAnsweers++;
+            userAnswersStack.push("failedAnswer");
+            Log.d("", "failedanswer++" + failedAnsweers);
         }
-        Log.d("UserAnswer", "User's Answer: " + answer.toString());
-        Log.d("CorrectAnswer", "Correct Answer: " + correctAnswer.toString());
 
-        Log.d("UserAnswer", "Answer: " + answer.toString() + " " + correctAnswers);
+        Log.d("Stack", "Stack size: " + userAnswersStack.peek() + " " + userAnswersStack.size());
+        Log.d("UserAnswer", "User's Answer: " + answer.toString());
+        Log.d("Answers", "Answers" + ans.toString());
+        Log.d("CorrectAnswer", "Correct Answer: " + correctAnswer.toString());
         return answer;
     }
 
-
+    private float Percent(){
+        float percent = (correctAnswers * 100)/AllQuestions;
+        return percent;
+    }
 }
