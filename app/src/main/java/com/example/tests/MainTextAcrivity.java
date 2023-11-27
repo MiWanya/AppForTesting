@@ -65,6 +65,8 @@ public class MainTextAcrivity extends AppCompatActivity{
     List<Question> questionsList = new ArrayList<>();
     int AllQuestions = 5;
 
+    String USERNAME, USERSURNAME, USERNICKNAME, USERCITY;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,14 @@ public class MainTextAcrivity extends AppCompatActivity{
         setContentView(R.layout.activity_main_text_acrivity);
 
         boolean isFileDownloaded = false;
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            USERNAME = intent.getStringExtra("USERNAME");
+            USERSURNAME = intent.getStringExtra("USERSURNAME");
+            USERNICKNAME = intent.getStringExtra("USERNICKNAME");
+            USERCITY = intent.getStringExtra("USERCITY");
+        }
 
         // Получаем цвета из ресурсов
         colorGray2 = ContextCompat.getColor(this, R.color.Gray2);
@@ -206,6 +216,12 @@ public class MainTextAcrivity extends AppCompatActivity{
                                 }
                             }
 
+                            // Обработка последнего вопроса, если он не завершается пустой строкой
+                            if (!question.isEmpty()) {
+                                Question question1 = new Question(question, questionType, new ArrayList<>(options), new ArrayList<>(correctAnswers));
+                                questionsList.add(question1);
+                            }
+
                             // Закрыть потоки, когда они больше не нужны
                             bufferedReader.close();
                             reader.close();
@@ -304,7 +320,7 @@ public class MainTextAcrivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 // Переход к следующему вопросу
-                if (currentQuestionIndex < 5) {
+                if (currentQuestionIndex <= 50) {
                     Question question = questionsList.get(currentQuestionIndex + 1);
                     questionTextView.setText(question.GetQuestionText());
                     Question nextquestion;
@@ -319,7 +335,7 @@ public class MainTextAcrivity extends AppCompatActivity{
 
                     currentQuestionIndex++; // Переключаемся на следующий вопрос
 
-                    if (currentQuestionIndex < 5) {
+                    if (currentQuestionIndex <= 50) {
 
                         try {
                             nextquestion = questionsList.get(currentQuestionIndex+1);
@@ -345,7 +361,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                     }
                 }
                 // Последний вопрос
-                if (currentQuestionIndex == 4){
+                if (currentQuestionIndex == 50){
                     NextQuestion.setBackgroundColor(colorGold);
                 }
                 // Стандартный цвет кнопок
