@@ -61,12 +61,11 @@ public class MainTextAcrivity extends AppCompatActivity{
     private Button lastClickedButton; // Последняя нажатая кнопка
     Button PreviousQuestion, NextQuestion, Answer1, Answer2, Answer3, Answer4;
     int colorGray2, colorBlue, colorGold;
-    int currentQuestionIndex = 0; // Индекс текущего вопроса
+    int currentQuestionIndex = 47; // Индекс текущего вопроса
     List<Question> questionsList = new ArrayList<>();
-    int AllQuestions = 5;
+    int AllQuestions = 50;
 
     String USERNAME, USERSURNAME, USERNICKNAME, USERCITY;
-
 
     @Override
     public void onBackPressed() {
@@ -309,7 +308,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                     }
                 }
                 // Если есть ещё вопросы для кнопки Продолжить
-                if (currentQuestionIndex < questionsList.size()){
+                if (currentQuestionIndex < AllQuestions){
                     NextQuestion.setBackgroundColor(colorBlue);
                 }
                 // Первый вопрос
@@ -325,8 +324,9 @@ public class MainTextAcrivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 // Переход к следующему вопросу
-                if (currentQuestionIndex <= 50) {
-                    Question question = questionsList.get(currentQuestionIndex + 1);
+                if (currentQuestionIndex <= AllQuestions) {
+                    Log.d("ЦИкл", "ЦИКЛ 1 НАЧАЛ ВЫПОЛНЯТЬСЯ");
+                    Question question = questionsList.get(currentQuestionIndex);
                     questionTextView.setText(question.GetQuestionText());
                     Question nextquestion;
                     QuestionType type = question.getQuestionType();
@@ -337,10 +337,9 @@ public class MainTextAcrivity extends AppCompatActivity{
                     answer2 = false;
                     answer3 = false;
                     answer4 = false;
-
                     currentQuestionIndex++; // Переключаемся на следующий вопрос
-
-                    if (currentQuestionIndex <= 50) {
+                    if (currentQuestionIndex < AllQuestions) {
+                        Log.d("ЦИКЛ", "ЦИКЛ 2 НАЧАЛ ВЫПОЛНЯТЬСЯ");
 
                         try {
                             nextquestion = questionsList.get(currentQuestionIndex+1);
@@ -357,16 +356,19 @@ public class MainTextAcrivity extends AppCompatActivity{
                                 optionsText.append("\n");
                             }
                         }
+                        Log.d("ЦИКЛ", "ЦИКЛ 2 ЗАКОНЧИЛСЯ");
                         optionTextView.setText(optionsText.toString());
                     } else {
+                        Log.d("ЦИКЛ 2 ВЫПОЛНЯЕТ ELSE", "ЦИКЛ 2 ВЫПОЛНЯЕТ ELSE");
                         // Покажите диалоговое окно
                         AlertDialog dialog = builder.create();
                         dialog.show();
                         Log.d("Result of testing", "Correct answers: " + correctAnswers + " Failed answers: " + failedAnsweers + " Percent of correct answers: " + Percent());
                     }
+
                 }
                 // Последний вопрос
-                if (currentQuestionIndex == 50){
+                if (currentQuestionIndex == AllQuestions){
                     NextQuestion.setBackgroundColor(colorGold);
                 }
                 // Стандартный цвет кнопок
@@ -374,7 +376,9 @@ public class MainTextAcrivity extends AppCompatActivity{
                     PreviousQuestion.setBackgroundColor(colorBlue);
                 }
                 setDefaultColors(colorBlue);
+
             }
+
         });
 
         Answer1.setOnClickListener(new View.OnClickListener() {
