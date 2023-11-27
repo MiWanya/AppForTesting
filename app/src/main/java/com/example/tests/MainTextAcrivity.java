@@ -69,6 +69,11 @@ public class MainTextAcrivity extends AppCompatActivity{
 
 
     @Override
+    public void onBackPressed() {
+        showConfirmationDialog();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_text_acrivity);
@@ -531,6 +536,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                 buttonStates.put(Answer4, answer4); // Сохраняем состояние кнопки в buttonStates
             }
         });
+
     }
     private void changeButtonColorSingle (Button button, Boolean answer) {
         // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
@@ -695,4 +701,30 @@ public class MainTextAcrivity extends AppCompatActivity{
         float percent = (correctAnswers * 100)/AllQuestions;
         return percent;
     }
+
+    private void showConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Подтверждение");
+        builder.setMessage("Вы уверены, что хотите начать тестирование заново?");
+
+        builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Пользователь подтвердил, выполните действия для перехода на предыдущий экран
+                finish(); // Это закроет текущую активность и вернется на предыдущую
+            }
+        });
+
+        builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Пользователь отменил, ничего не делаем
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 }
