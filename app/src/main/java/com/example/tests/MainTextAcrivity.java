@@ -46,14 +46,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainTextAcrivity extends AppCompatActivity{
-
     Stack userAnswersStack = new Stack();
-
-    int correctAnswers, failedAnsweers = 0;
+    int correctAnswers = 0, failedAnsweers = 0;
     List<UserAnswer> userAnswersList = new ArrayList<>();
     Boolean answer1 = false,
             answer2 = false,
-            answer3 = false ,
+            answer3 = false,
             answer4 = false;
     private Map<Button, Boolean> buttonStates = new HashMap<>();
     private boolean isClickedButton = false;
@@ -61,12 +59,11 @@ public class MainTextAcrivity extends AppCompatActivity{
     private Button lastClickedButton; // Последняя нажатая кнопка
     Button PreviousQuestion, NextQuestion, Answer1, Answer2, Answer3, Answer4;
     int colorGray2, colorBlue, colorGold;
-    int currentQuestionIndex = 47; // Индекс текущего вопроса
+    int currentQuestionIndex = 0; // Индекс текущего вопроса
     List<Question> questionsList = new ArrayList<>();
-    int AllQuestions = 50;
-
+    int AllQuestions = 49;
     String USERNAME, USERSURNAME, USERNICKNAME, USERCITY;
-
+    int[] array = new int[50];
     @Override
     public void onBackPressed() {
         showConfirmationDialog();
@@ -76,6 +73,13 @@ public class MainTextAcrivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_text_acrivity);
+
+        // Создаем массив с числами от 0 до 49
+        for (int i = 0; i < array.length; i++) {
+            array[i] = i;
+        }
+        // Перемешиваем массив
+        shuffleArray(array);
 
         boolean isFileDownloaded = false;
 
@@ -147,6 +151,7 @@ public class MainTextAcrivity extends AppCompatActivity{
 
         FileDownloadApi fileDownloadApi = RetrofitClient.getClient().create(FileDownloadApi.class);
         Log.d("FileDownloadApi", "fileDownloadApi sucsed");
+
         Call<ResponseBody> call = fileDownloadApi.downloadFile("https://drive.google.com/uc?id=1W669YuIDmEqhplKJrpyl4tuPdWpL3RKL");
         Log.d("Call<ResponseBody> ", "call = googleDrive");
         call.enqueue(new Callback<ResponseBody>() {
@@ -169,35 +174,35 @@ public class MainTextAcrivity extends AppCompatActivity{
                             QuestionType questionType = QuestionType.SINGLE_CHOICE;
 
                             String line;
+
                             while ((line = bufferedReader.readLine()) != null) {
+
                                 if (line.startsWith("$ ")) {
-                                    // Это строка с текстом вопроса
+                                    // This is a line with the question text
                                     question = line.substring(2);
                                 } else if (line.startsWith("^ ")) {
-                                    // Это строка с вариантами ответов и правильными ответами
+                                    // This is a line with options and correct answers
                                     String content = line.substring(2);
                                     String[] parts = content.split(", ");
 
                                     List<String> questionOptions = new ArrayList<>();
                                     List<String> questionCorrectAnswers = new ArrayList<>();
 
-                                    for (String part : parts) {
-                                        if (part.startsWith("* ")) {
-                                            questionCorrectAnswers.add(part.substring(1));
-                                        } else {
-                                            questionOptions.add(part);
-                                        }
+                                    for (String part : parts){
+                                        questionOptions.add(part);
                                     }
 
                                     options.addAll(questionOptions);
+                                    correctAnswers.addAll(questionCorrectAnswers);
                                 } else if (line.startsWith("* ")) {
-                                    String content = line.substring(1);
+                                    // This is a line with correct answers for multiple choice questions
+                                    String content = line.substring(2);
                                     String[] parts = content.split(",");
 
                                     List<String> questionCorrectAnswers = new ArrayList<>();
 
                                     for (String part : parts) {
-                                        questionCorrectAnswers.add(part.substring(1));
+                                        questionCorrectAnswers.add(part);
                                     }
 
                                     correctAnswers.addAll(questionCorrectAnswers);
@@ -207,17 +212,17 @@ public class MainTextAcrivity extends AppCompatActivity{
                                         questionType = QuestionType.SINGLE_CHOICE;
                                     }
                                 } else if (line.isEmpty()) {
-                                    // Пустая строка обозначает конец вопроса
+                                    // Empty line indicates the end of a question
                                     Question question1 = new Question(question, questionType, new ArrayList<>(options), new ArrayList<>(correctAnswers));
-
                                     questionsList.add(question1);
 
-                                    // Очищаем переменные для следующего вопроса
+                                    // Reset variables for the next question
                                     question = "";
                                     options.clear();
                                     correctAnswers.clear();
                                     questionType = null;
                                 }
+
                             }
 
                             // Обработка последнего вопроса, если он не завершается пустой строкой
@@ -234,9 +239,11 @@ public class MainTextAcrivity extends AppCompatActivity{
                             // Отобразить вопросы
                             if (currentQuestionIndex < questionsList.size()) {
                                 Log.d("Questions", "Number of questions: " + questionsList.size());
-                                Question question1 = questionsList.get(currentQuestionIndex);
+                                Question question1 = questionsList.get(array[currentQuestionIndex]);
                                 questionTextView.setText(question1.GetQuestionText());
                                 List<String> correct = question1.getCorrectAnswer();
+
+                                Log.d("Текущий вопрос", "Current question: " + question1.GetQuestionText());
 
                                 // Создаем строку для вариантов ответов
                                 StringBuilder optionsText = new StringBuilder();
@@ -255,6 +262,9 @@ public class MainTextAcrivity extends AppCompatActivity{
                                 AlertDialog dialog = builder.create();
                                 dialog.show();
                             }
+
+                            Log.d("Questions count", "Count of questions: " + question.length());
+
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -288,7 +298,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                 if (currentQuestionIndex > 0) {
                     currentQuestionIndex--; // Возвращаемся к предыдущему вопросу
 
-                    Question question = questionsList.get(currentQuestionIndex);
+                    Question question = questionsList.get(array[currentQuestionIndex]);
                     questionTextView.setText(question.GetQuestionText());
 
                     StringBuilder optionsText = new StringBuilder();
@@ -301,11 +311,15 @@ public class MainTextAcrivity extends AppCompatActivity{
                     }
                     optionTextView.setText(optionsText.toString());
 
-                    if (userAnswersStack.pop() == "correctAnswer"){
+                    String lastAnswer = userAnswersStack.pop();
+
+                    if (lastAnswer == "correctAnswer"){
                         correctAnswers--;
-                    } else if (userAnswersStack.pop() == "failedAnswer") {
+                    } else if (lastAnswer == "failedAnswer") {
                         failedAnsweers--;
                     }
+                } else {
+                    showConfirmationDialog();
                 }
                 // Если есть ещё вопросы для кнопки Продолжить
                 if (currentQuestionIndex < AllQuestions){
@@ -317,37 +331,46 @@ public class MainTextAcrivity extends AppCompatActivity{
                 }
 
                 setDefaultColors(colorBlue);
+                answer1 = false;
+                answer2 = false;
+                answer3 = false;
+                answer4 = false;
+                setButtonState(Answer1, false);
+                setButtonState(Answer2, false);
+                setButtonState(Answer3, false);
+                setButtonState(Answer4, false);
             }
         });
 
         NextQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Переход к следующему вопросу
-                if (currentQuestionIndex <= AllQuestions) {
-                    Log.d("ЦИкл", "ЦИКЛ 1 НАЧАЛ ВЫПОЛНЯТЬСЯ");
-                    Question question = questionsList.get(currentQuestionIndex);
-                    questionTextView.setText(question.GetQuestionText());
-                    Question nextquestion;
-                    QuestionType type = question.getQuestionType();
 
-                    Log.d("Answer ", "Answer1: " + answer1);
-                    Answer(questionsList, type);
-                    answer1 = false;
-                    answer2 = false;
-                    answer3 = false;
-                    answer4 = false;
-                    currentQuestionIndex++; // Переключаемся на следующий вопрос
-                    if (currentQuestionIndex < AllQuestions) {
-                        Log.d("ЦИКЛ", "ЦИКЛ 2 НАЧАЛ ВЫПОЛНЯТЬСЯ");
+                Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
+                QuestionType type = AnserQuestion.getQuestionType();
 
-                        try {
-                            nextquestion = questionsList.get(currentQuestionIndex+1);
-                            Log.d("Nextquestion", "Text: " + nextquestion.GetQuestionText() + questionsList.toArray().length + "Current question: " + currentQuestionIndex);
-                        }
-                        catch (IndexOutOfBoundsException exception) {
-                            Log.d("Nextquestion", "Text: not found " + "Current question: " + currentQuestionIndex);
-                        }
+                Log.d("QuestionList size", "Size: " + questionsList.size());
+
+                Log.d("Answer ", "Answer1: " + answer1);
+                Answer(questionsList, type);
+                answer1 = false;
+                answer2 = false;
+                answer3 = false;
+                answer4 = false;
+                setButtonState(Answer1, false);
+                setButtonState(Answer2, false);
+                setButtonState(Answer3, false);
+                setButtonState(Answer4, false);
+
+                currentQuestionIndex++; // Переключаемся на следующий вопрос
+
+                Log.d("", " " + currentQuestionIndex + questionsList.size());
+
+                //Переход к следующему вопросу
+                    if (currentQuestionIndex <= AllQuestions) {
+                        Question question = questionsList.get(array[currentQuestionIndex]);
+                        questionTextView.setText(question.GetQuestionText());
+
                         StringBuilder optionsText = new StringBuilder();
                         List<String> options = question.getOptions();
                         for (int i = 0; i < options.size(); i++) {
@@ -356,17 +379,14 @@ public class MainTextAcrivity extends AppCompatActivity{
                                 optionsText.append("\n");
                             }
                         }
-                        Log.d("ЦИКЛ", "ЦИКЛ 2 ЗАКОНЧИЛСЯ");
                         optionTextView.setText(optionsText.toString());
+                        Log.d("Questions", "Question type: " + type + " Options: " + options);
                     } else {
-                        Log.d("ЦИКЛ 2 ВЫПОЛНЯЕТ ELSE", "ЦИКЛ 2 ВЫПОЛНЯЕТ ELSE");
                         // Покажите диалоговое окно
                         AlertDialog dialog = builder.create();
                         dialog.show();
                         Log.d("Result of testing", "Correct answers: " + correctAnswers + " Failed answers: " + failedAnsweers + " Percent of correct answers: " + Percent());
                     }
-
-                }
                 // Последний вопрос
                 if (currentQuestionIndex == AllQuestions){
                     NextQuestion.setBackgroundColor(colorGold);
@@ -376,7 +396,6 @@ public class MainTextAcrivity extends AppCompatActivity{
                     PreviousQuestion.setBackgroundColor(colorBlue);
                 }
                 setDefaultColors(colorBlue);
-
             }
 
         });
@@ -384,194 +403,195 @@ public class MainTextAcrivity extends AppCompatActivity{
         Answer1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Question question = questionsList.get(currentQuestionIndex);
-                QuestionType type = question.getQuestionType();
-
-                if (type == QuestionType.SINGLE_CHOICE){
-                    // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
-                    if (lastClickedButton != null) {
-                        lastClickedButton.setBackgroundColor(colorBlue);
-                        answer1 = false;
-                        answer2 = false;
-                        answer3 = false;
-                        answer4 = false;
-                    }
-                    // Устанавливаем новую последнюю нажатую кнопку
-                    lastClickedButton = (Button) view;
-
-                    // Устанавливаем новый цвет для текущей кнопки
-                    view.setBackgroundColor(colorGold);
-                    answer1 = true; // Обновляем глобальную переменную
-                    Log.d(" ", "answer: " + answer1);
-                } else if (type == QuestionType.MULTIPLE_CHOICE) {
-                    boolean isClicked = getButtonState((Button) view);
-                    if (!isClicked) {
-                        view.setBackgroundColor(colorGold);
-                        setButtonState((Button) view, true);
-                        answer1 = true; // Обновляем глобальную переменную
-                        Log.d("ButtonState", "Changed to gold" + answer1);
-                    } else {
-                        view.setBackgroundColor(colorBlue);
-                        setButtonState((Button) view, false);
-                        answer1 = false; // Обновляем глобальную переменную
-                        Log.d("ButtonState", "Changed to blue" + answer1);
-                    }
+                Question question = null;
+                if (currentQuestionIndex <= questionsList.size()) {
+                    question = questionsList.get(array[currentQuestionIndex]);
+                } else {
+                    Log.d("currentQuestionIndex < questionsList.size()", "currentQuestionIndex > questionsList.size()" + " "
+                    + currentQuestionIndex + " " + questionsList.size());
                 }
-                buttonStates.put(Answer1, answer1); // Сохраняем состояние кнопки в buttonStates
+
+                if (question != null) {
+                    QuestionType type = question.getQuestionType();
+
+                    if (type == QuestionType.SINGLE_CHOICE){
+                        // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
+                        if (lastClickedButton != null) {
+                            lastClickedButton.setBackgroundColor(colorBlue);
+                            answer2 = false;
+                            answer3 = false;
+                            answer4 = false;
+                        }
+                        // Устанавливаем новую последнюю нажатую кнопку
+                        lastClickedButton = (Button) view;
+
+                        // Устанавливаем новый цвет для текущей кнопки
+                        view.setBackgroundColor(colorGold);
+                        answer1 = true; // Обновляем глобальную переменную
+                        Log.d(" ", "answer: " + answer1);
+                    } else if (type == QuestionType.MULTIPLE_CHOICE) {
+                        boolean isClicked = getButtonState((Button) view);
+                        if (!isClicked) {
+                            view.setBackgroundColor(colorGold);
+                            setButtonState((Button) view, true);
+                            answer1 = true; // Обновляем глобальную переменную
+                            Log.d("ButtonState", "Changed to gold" + answer1);
+                        } else {
+                            view.setBackgroundColor(colorBlue);
+                            setButtonState((Button) view, false);
+                            answer1 = false; // Обновляем глобальную переменную
+                            Log.d("ButtonState", "Changed to blue" + answer1);
+                        }
+                    }
+                    buttonStates.put(Answer1, answer1); // Сохраняем состояние кнопки в buttonStates
+                }
             }
         });
 
         Answer2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Question question = questionsList.get(currentQuestionIndex);
-                QuestionType type = question.getQuestionType();
-
-                if (type == QuestionType.SINGLE_CHOICE){
-                    // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
-                    if (lastClickedButton != null) {
-                        lastClickedButton.setBackgroundColor(colorBlue);
-                        answer1 = false;
-                        answer2 = false;
-                        answer3 = false;
-                        answer4 = false;
-                    }
-                    // Устанавливаем новую последнюю нажатую кнопку
-                    lastClickedButton = (Button) view;
-
-                    // Устанавливаем новый цвет для текущей кнопки
-                    view.setBackgroundColor(colorGold);
-                    answer2 = true; // Обновляем глобальную переменную
-                    Log.d(" ", "answer: " + answer2);
-                } else if (type == QuestionType.MULTIPLE_CHOICE) {
-                    boolean isClicked = getButtonState((Button) view);
-                    if (!isClicked) {
-                        view.setBackgroundColor(colorGold);
-                        setButtonState((Button) view, true);
-                        answer2 = true; // Обновляем глобальную переменную
-                        Log.d("ButtonState", "Changed to gold" + answer2);
-                    } else {
-                        view.setBackgroundColor(colorBlue);
-                        setButtonState((Button) view, false);
-                        answer2 = false; // Обновляем глобальную переменную
-                        Log.d("ButtonState", "Changed to blue" + answer2);
-                    }
+                Question question = null;
+                if (currentQuestionIndex <= questionsList.size()) {
+                    question = questionsList.get(array[currentQuestionIndex]);
+                } else {
+                    Log.d("currentQuestionIndex < questionsList.size()", "currentQuestionIndex > questionsList.size()" + " "
+                            + currentQuestionIndex + " " + questionsList.size());
                 }
-                buttonStates.put(Answer2, answer2); // Сохраняем состояние кнопки в buttonStates
+
+                if (question != null) {
+                    QuestionType type = question.getQuestionType();
+
+                    if (type == QuestionType.SINGLE_CHOICE){
+                        // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
+                        if (lastClickedButton != null) {
+                            lastClickedButton.setBackgroundColor(colorBlue);
+                            answer1 = false;
+                            answer3 = false;
+                            answer4 = false;
+                        }
+                        // Устанавливаем новую последнюю нажатую кнопку
+                        lastClickedButton = (Button) view;
+
+                        // Устанавливаем новый цвет для текущей кнопки
+                        view.setBackgroundColor(colorGold);
+                        answer2 = true; // Обновляем глобальную переменную
+                        Log.d(" ", "answer: " + answer1);
+                    } else if (type == QuestionType.MULTIPLE_CHOICE) {
+                        boolean isClicked = getButtonState((Button) view);
+                        if (!isClicked) {
+                            view.setBackgroundColor(colorGold);
+                            setButtonState((Button) view, true);
+                            answer2 = true; // Обновляем глобальную переменную
+                            Log.d("ButtonState", "Changed to gold" + answer2);
+                        } else {
+                            view.setBackgroundColor(colorBlue);
+                            setButtonState((Button) view, false);
+                            answer2 = false; // Обновляем глобальную переменную
+                            Log.d("ButtonState", "Changed to blue" + answer2);
+                        }
+                    }
+                    buttonStates.put(Answer2, answer2); // Сохраняем состояние кнопки в buttonStates
+                }
             }
         });
 
         Answer3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Question question = questionsList.get(currentQuestionIndex);
-                QuestionType type = question.getQuestionType();
-
-                if (type == QuestionType.SINGLE_CHOICE){
-                    // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
-                    if (lastClickedButton != null) {
-                        lastClickedButton.setBackgroundColor(colorBlue);
-                        answer1 = false;
-                        answer2 = false;
-                        answer3 = false;
-                        answer4 = false;
-                    }
-                    // Устанавливаем новую последнюю нажатую кнопку
-                    lastClickedButton = (Button) view;
-
-                    // Устанавливаем новый цвет для текущей кнопки
-                    view.setBackgroundColor(colorGold);
-                    answer3 = true; // Обновляем глобальную переменную
-                    Log.d(" ", "answer: " + answer3);
-                } else if (type == QuestionType.MULTIPLE_CHOICE) {
-                    boolean isClicked = getButtonState((Button) view);
-                    if (!isClicked) {
-                        view.setBackgroundColor(colorGold);
-                        setButtonState((Button) view, true);
-                        answer3 = true; // Обновляем глобальную переменную
-                        Log.d("ButtonState", "Changed to gold" + answer3);
-                    } else {
-                        view.setBackgroundColor(colorBlue);
-                        setButtonState((Button) view, false);
-                        answer3 = false; // Обновляем глобальную переменную
-                        Log.d("ButtonState", "Changed to blue" + answer3);
-                    }
+                Question question = null;
+                if (currentQuestionIndex <= questionsList.size()) {
+                    question = questionsList.get(array[currentQuestionIndex]);
+                } else {
+                    Log.d("currentQuestionIndex < questionsList.size()", "currentQuestionIndex > questionsList.size()" + " "
+                            + currentQuestionIndex + " " + questionsList.size());
                 }
-                buttonStates.put(Answer3, answer3); // Сохраняем состояние кнопки в buttonStates
+
+                if (question != null) {
+                    QuestionType type = question.getQuestionType();
+
+                    if (type == QuestionType.SINGLE_CHOICE){
+                        // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
+                        if (lastClickedButton != null) {
+                            lastClickedButton.setBackgroundColor(colorBlue);
+                            answer2 = false;
+                            answer1 = false;
+                            answer4 = false;
+                        }
+                        // Устанавливаем новую последнюю нажатую кнопку
+                        lastClickedButton = (Button) view;
+
+                        // Устанавливаем новый цвет для текущей кнопки
+                        view.setBackgroundColor(colorGold);
+                        answer3 = true; // Обновляем глобальную переменную
+                        Log.d(" ", "answer: " + answer1);
+                    } else if (type == QuestionType.MULTIPLE_CHOICE) {
+                        boolean isClicked = getButtonState((Button) view);
+                        if (!isClicked) {
+                            view.setBackgroundColor(colorGold);
+                            setButtonState((Button) view, true);
+                            answer3 = true; // Обновляем глобальную переменную
+                            Log.d("ButtonState", "Changed to gold" + answer3);
+                        } else {
+                            view.setBackgroundColor(colorBlue);
+                            setButtonState((Button) view, false);
+                            answer3 = false; // Обновляем глобальную переменную
+                            Log.d("ButtonState", "Changed to blue" + answer3);
+                        }
+                    }
+                    buttonStates.put(Answer3, answer3); // Сохраняем состояние кнопки в buttonStates
+                }
             }
         });
 
         Answer4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Question question = questionsList.get(currentQuestionIndex);
-                QuestionType type = question.getQuestionType();
-
-                if (type == QuestionType.SINGLE_CHOICE){
-                    // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
-                    if (lastClickedButton != null) {
-                        lastClickedButton.setBackgroundColor(colorBlue);
-                        answer1 = false;
-                        answer2 = false;
-                        answer3 = false;
-                        answer4 = false;
-                    }
-                    // Устанавливаем новую последнюю нажатую кнопку
-                    lastClickedButton = (Button) view;
-
-                    // Устанавливаем новый цвет для текущей кнопки
-                    view.setBackgroundColor(colorGold);
-                    answer4 = true; // Обновляем глобальную переменную
-                    Log.d(" ", "answer: " + answer4);
-                } else if (type == QuestionType.MULTIPLE_CHOICE) {
-                    boolean isClicked = getButtonState((Button) view);
-                    if (!isClicked) {
-                        view.setBackgroundColor(colorGold);
-                        setButtonState((Button) view, true);
-                        answer4 = true; // Обновляем глобальную переменную
-                        Log.d("ButtonState", "Changed to gold" + answer4);
-                    } else {
-                        view.setBackgroundColor(colorBlue);
-                        setButtonState((Button) view, false);
-                        answer4 = false; // Обновляем глобальную переменную
-                        Log.d("ButtonState", "Changed to blue" + answer4);
-                    }
+                Question question = null;
+                if (currentQuestionIndex <= questionsList.size()) {
+                    question = questionsList.get(array[currentQuestionIndex]);
+                } else {
+                    Log.d("currentQuestionIndex < questionsList.size()", "currentQuestionIndex > questionsList.size()" + " "
+                            + currentQuestionIndex + " " + questionsList.size());
                 }
-                buttonStates.put(Answer4, answer4); // Сохраняем состояние кнопки в buttonStates
+
+                if (question != null) {
+                    QuestionType type = question.getQuestionType();
+
+                    if (type == QuestionType.SINGLE_CHOICE){
+                        // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
+                        if (lastClickedButton != null) {
+                            lastClickedButton.setBackgroundColor(colorBlue);
+                            answer2 = false;
+                            answer3 = false;
+                            answer1 = false;
+                        }
+                        // Устанавливаем новую последнюю нажатую кнопку
+                        lastClickedButton = (Button) view;
+
+                        // Устанавливаем новый цвет для текущей кнопки
+                        view.setBackgroundColor(colorGold);
+                        answer4 = true; // Обновляем глобальную переменную
+                        Log.d(" ", "answer: " + answer4);
+                    } else if (type == QuestionType.MULTIPLE_CHOICE) {
+                        boolean isClicked = getButtonState((Button) view);
+                        if (!isClicked) {
+                            view.setBackgroundColor(colorGold);
+                            setButtonState((Button) view, true);
+                            answer4 = true; // Обновляем глобальную переменную
+                            Log.d("ButtonState", "Changed to gold" + answer4);
+                        } else {
+                            view.setBackgroundColor(colorBlue);
+                            setButtonState((Button) view, false);
+                            answer4 = false; // Обновляем глобальную переменную
+                            Log.d("ButtonState", "Changed to blue" + answer4);
+                        }
+                    }
+                    buttonStates.put(Answer4, answer4); // Сохраняем состояние кнопки в buttonStates
+                }
             }
         });
 
-    }
-    private void changeButtonColorSingle (Button button, Boolean answer) {
-        // Если у нас есть последняя нажатая кнопка, возвращаем ей начальный цвет
-        if (lastClickedButton != null) {
-            lastClickedButton.setBackgroundColor(colorBlue);
-            answer = false;
-            Log.d(" ", "answer: " + answer);
-        }
-        // Устанавливаем новую последнюю нажатую кнопку
-        lastClickedButton = button;
-
-        // Устанавливаем новый цвет для текущей кнопки
-        button.setBackgroundColor(colorGold);
-        answer = true;
-        Log.d(" ", "answer: " + answer);
-    }
-
-    private void changeButtonColorMulti(Button button, Boolean answer) {
-        Log.d("ButtonClick", "Button clicked");
-        boolean isClicked = getButtonState(button);
-        if (!isClicked) {
-            button.setBackgroundColor(colorGold);
-            setButtonState(button, true);
-            answer = true;
-            Log.d("ButtonState", "Changed to gold" + answer);
-        } else {
-            button.setBackgroundColor(colorBlue);
-            setButtonState(button, false);
-            answer = false;
-            Log.d("ButtonState", "Changed to blue" + answer);
-        }
     }
 
     private void setDefaultColors(int color){
@@ -629,8 +649,6 @@ public class MainTextAcrivity extends AppCompatActivity{
         }
     }
 
-
-
     // Метод для поиска вопроса по идентификатору
     private Question getQuestionById(int questionId) {
         for (Question question : questionsList) {
@@ -643,7 +661,8 @@ public class MainTextAcrivity extends AppCompatActivity{
 
     private UserAnswer Answer(List<Question> questionsList, QuestionType type){
 
-        Question question = questionsList.get(currentQuestionIndex);
+        Question question = questionsList.get(array[currentQuestionIndex]);
+
         List<String> options = question.getOptions();
         String userSelectedOption;
 
@@ -729,6 +748,18 @@ public class MainTextAcrivity extends AppCompatActivity{
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    // Метод для перемешивания массива
+    private static void shuffleArray(int[] array) {
+        int index, temp;
+        Random random = new Random();
+        for (int i = array.length - 1; i > 0; i--) {
+            index = random.nextInt(i + 1);
+            temp = array[index];
+            array[index] = array[i];
+            array[i] = temp;
+        }
     }
 
 }
