@@ -59,7 +59,7 @@ public class MainTextAcrivity extends AppCompatActivity{
     private Button lastClickedButton; // Последняя нажатая кнопка
     Button PreviousQuestion, NextQuestion, Answer1, Answer2, Answer3, Answer4;
     int colorGray2, colorBlue, colorGold;
-    int currentQuestionIndex = 0; // Индекс текущего вопроса
+    int currentQuestionIndex = 47; // Индекс текущего вопроса
     List<Question> questionsList = new ArrayList<>();
     int AllQuestions = 49;
     String USERNAME, USERSURNAME, USERNICKNAME, USERCITY;
@@ -134,6 +134,15 @@ public class MainTextAcrivity extends AppCompatActivity{
         builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
+                currentQuestionIndex--;
+
+                String lastAnswer = userAnswersStack.pop();
+
+                if (lastAnswer == "correctAnswer"){
+                    correctAnswers--;
+                } else if (lastAnswer == "failedAnswer") {
+                    failedAnsweers--;
+                }
             }
         });
 
