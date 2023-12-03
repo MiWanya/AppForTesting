@@ -21,7 +21,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.View;
+import androidx.appcompat.app.AppCompatActivity;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,6 +51,7 @@ import retrofit2.Response;
 
 public class MainTextAcrivity extends AppCompatActivity{
     Stack userAnswersStack = new Stack();
+    private EmailSender emailSender;
     int correctAnswers = 0, failedAnsweers = 0;
     List<UserAnswer> userAnswersList = new ArrayList<>();
     Boolean answer1 = false,
@@ -68,11 +73,45 @@ public class MainTextAcrivity extends AppCompatActivity{
     public void onBackPressed() {
         showConfirmationDialog();
     }
+    private void sendEmail() {
+       // String toAddress = "operesadin66@gmail.com";
+        String toAddress = "operesadin66@mail.ru";
+        String subject = "Тема письма";
+        String body = "Хоть что-то, но я сделал";
 
+        EmailCallback emailCallback = new EmailCallback() {
+            @Override
+            public void onEmailSent() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Обработка успешной отправки
+                        Log.i("", "Письмо успешно отправлено");
+                    }
+                });
+            }
+
+            @Override
+            public void onEmailFailed() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Обработка ошибки отправки
+                        Log.i("", "Ошибка при отправке письма");
+                    }
+                });
+            }
+        };
+
+        emailSender.sendEmail(toAddress, subject, body, emailCallback);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_text_acrivity);
+
+        emailSender = new EmailSender("DomMafiaTesting123@mail.ru", "5ZbYS1qvPcYdjZvyLmrZ");
+
 
         // Создаем массив с числами от 0 до 49
         for (int i = 0; i < array.length; i++) {
@@ -125,12 +164,19 @@ public class MainTextAcrivity extends AppCompatActivity{
         builder.setMessage("Завершить тестирование?");
 
         builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+
             public void onClick(DialogInterface dialog, int id) {
 
+                Log.i("Сообщение","сообщение еще не отправлено");
+
+                sendEmail();
+
+                
                 // Здесь можно разместить код для завершения тестирования
                 finish();
             }
         });
+
         builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
