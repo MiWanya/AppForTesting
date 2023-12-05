@@ -34,8 +34,7 @@ public class EmailSender {
                 String subject = params[1];
                 String body = params[2];
 
-                // Остальной код отправки письма, который ранее был в методе sendEmail
-                // ...
+
 
 
                 Properties props = new Properties();
