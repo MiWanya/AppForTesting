@@ -45,4 +45,16 @@ public class UserAnswer {
         return Objects.equals(this.selectedOptions, otherAnswer.selectedOptions);
     }
 
+    public static boolean isPartialMatch(UserAnswer userAnswer1, UserAnswer userAnswer2) {
+        List<String> list1 = userAnswer1.getSelectedOptions();
+        List<String> list2 = userAnswer2.getSelectedOptions();
+
+        for (String item : list1) {
+            if (list2.contains(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

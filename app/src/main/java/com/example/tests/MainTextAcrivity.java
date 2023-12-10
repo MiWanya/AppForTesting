@@ -6,53 +6,35 @@ import androidx.core.content.ContextCompat;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.View;
-import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.sql.Struct;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import okhttp3.ResponseBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import com.example.tests.EmailSender.*;
 
 public class MainTextAcrivity extends AppCompatActivity{
     Stack userAnswersStack = new Stack();
     private EmailSender emailSender;
-    int correctAnswers = 0, failedAnsweers = 0;
+    int correctAnswers = 0, failedAnsweers = 0, partialAnswer = 0;
     List<UserAnswer> userAnswersList = new ArrayList<>();
     Boolean answer1 = false,
             answer2 = false,
@@ -64,31 +46,54 @@ public class MainTextAcrivity extends AppCompatActivity{
     private Button lastClickedButton; // Последняя нажатая кнопка
     Button PreviousQuestion, NextQuestion, Answer1, Answer2, Answer3, Answer4;
     int colorGray2, colorBlue, colorGold;
-    int currentQuestionIndex = 47; // Индекс текущего вопроса
+    int currentQuestionIndex = 0; // Индекс текущего вопроса
     List<Question> questionsList = new ArrayList<>();
     int AllQuestions = 49;
     String USERNAME, USERSURNAME, USERNICKNAME, USERCITY;
     int[] array = new int[50];
+    String toAddress;
+    String subject;
+    String body;
+
+    ProgressBar progressBar;
+    RelativeLayout RelativeButtons, RelativeQuestions;
     @Override
     public void onBackPressed() {
         showConfirmationDialog();
     }
     private void sendEmail() {
-       // String toAddress = "operesadin66@gmail.com";
-        String toAddress = "operesadin66@mail.ru";
-        String subject = "Тема письма";
-        String body = "Хоть что-то, но я сделал";
+        // String toAddress = "operesadin66@gmail.com";
+        String toAddress = "miwanyalv@vk.com";
+        String subject = "Данные: " + USERNAME + " " + USERSURNAME + " " + USERCITY + " " + USERNICKNAME;
+        String body = "Ответы: " + "\n Привальные ответы: " + correctAnswers + "\n Частично правильные ответы: " + partialAnswer + "\n Неправльные ответы: " + failedAnsweers;
 
         EmailCallback emailCallback = new EmailCallback() {
             @Override
+            public void onEmailTaskComplete(boolean success) {
+                if (success) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i("MainTextActivityTag", "Письмо успешно отправлено");
+                            Log.d("", "progress bar status: " + progressBar.getVisibility());
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.i("MainTextActivityTag", "Интерфейс обновляется");
+                                    Intent intent = new Intent(MainTextAcrivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    onEmailFailed();
+                }
+            }
+
+            @Override
             public void onEmailSent() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Обработка успешной отправки
-                        Log.i("", "Письмо успешно отправлено");
-                    }
-                });
+                // Implement if necessary
             }
 
             @Override
@@ -96,8 +101,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        // Обработка ошибки отправки
-                        Log.i("", "Ошибка при отправке письма");
+                        Log.i("MainTextActivityTag", "Ошибка при отправке письма");
                     }
                 });
             }
@@ -110,8 +114,7 @@ public class MainTextAcrivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_text_acrivity);
 
-        emailSender = new EmailSender("DomMafiaTesting123@mail.ru", "5ZbYS1qvPcYdjZvyLmrZ");
-
+        emailSender = new EmailSender("dommafiatest@outlook.com", "ixwbucizshsgzqzi");
 
         // Создаем массив с числами от 0 до 49
         for (int i = 0; i < array.length; i++) {
@@ -129,7 +132,6 @@ public class MainTextAcrivity extends AppCompatActivity{
             USERNICKNAME = intent.getStringExtra("USERNICKNAME");
             USERCITY = intent.getStringExtra("USERCITY");
         }
-
         // Получаем цвета из ресурсов
         colorGray2 = ContextCompat.getColor(this, R.color.Gray2);
         colorBlue = ContextCompat.getColor(this, R.color.Blue);
@@ -152,9 +154,9 @@ public class MainTextAcrivity extends AppCompatActivity{
         NextQuestion.setBackgroundColor(colorBlue);
 
         // Для эффекта загрузки
-        ProgressBar progressBar = findViewById(R.id.progressBar);
-        RelativeLayout RelativeQuestions = findViewById(R.id.Question);
-        RelativeLayout RelativeButtons = findViewById(R.id.RelativeButtons);
+        progressBar = findViewById(R.id.progressBar);
+        RelativeQuestions = findViewById(R.id.Question);
+        RelativeButtons = findViewById(R.id.RelativeButtons);
 
         // Показать ProgressBar при начале загрузки данных
         progressBar.setVisibility(View.VISIBLE);
@@ -164,22 +166,38 @@ public class MainTextAcrivity extends AppCompatActivity{
         builder.setMessage("Завершить тестирование?");
 
         builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
-
             public void onClick(DialogInterface dialog, int id) {
 
-                Log.i("Сообщение","сообщение еще не отправлено");
+                Log.i("Сообщение", "Сообщение еще не отправлено");
+
+                progressBar.setVisibility(View.VISIBLE);
+                RelativeButtons.setVisibility(View.GONE);
+                RelativeQuestions.setVisibility(View.GONE);
 
                 sendEmail();
 
-                
-                // Здесь можно разместить код для завершения тестирования
-                finish();
             }
         });
 
         builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
+                currentQuestionIndex--;
+
+                String lastAnswer = userAnswersStack.pop();
+
+                if (lastAnswer == "correctAnswer"){
+                    correctAnswers--;
+                } else if (lastAnswer == "failedAnswer") {
+                    failedAnsweers--;
+                }
+            }
+        });
+
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                dialogInterface.dismiss();
                 currentQuestionIndex--;
 
                 String lastAnswer = userAnswersStack.pop();
@@ -205,7 +223,7 @@ public class MainTextAcrivity extends AppCompatActivity{
         }).execute();
 
         FileDownloadApi fileDownloadApi = RetrofitClient.getClient().create(FileDownloadApi.class);
-        Log.d("FileDownloadApi", "fileDownloadApi sucsed");
+        Log.d("FileDownloadApi", "fileDownloadApi succsed");
 
         Call<ResponseBody> call = fileDownloadApi.downloadFile("https://drive.google.com/uc?id=1W669YuIDmEqhplKJrpyl4tuPdWpL3RKL");
         Log.d("Call<ResponseBody> ", "call = googleDrive");
@@ -372,6 +390,8 @@ public class MainTextAcrivity extends AppCompatActivity{
                         correctAnswers--;
                     } else if (lastAnswer == "failedAnswer") {
                         failedAnsweers--;
+                    } else if (lastAnswer == "partialAnswer"){
+                        partialAnswer--;
                     }
                 } else {
                     showConfirmationDialog();
@@ -440,7 +460,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                         // Покажите диалоговое окно
                         AlertDialog dialog = builder.create();
                         dialog.show();
-                        Log.d("Result of testing", "Correct answers: " + correctAnswers + " Failed answers: " + failedAnsweers + " Percent of correct answers: " + Percent());
+                        Log.d("Result of testing", "Correct answers: " + correctAnswers + " Failed answers: " + failedAnsweers + " Parial answers: " + partialAnswer + " Percent of correct answers: " + Percent());
                     }
                 // Последний вопрос
                 if (currentQuestionIndex == AllQuestions){
@@ -758,10 +778,15 @@ public class MainTextAcrivity extends AppCompatActivity{
                 e.printStackTrace();
             }
         }
+
         if (answer.equals(correctAnswer)){
             correctAnswers++;
             userAnswersStack.push("correctAnswer");
             Log.d("", "correctAnswers++" + correctAnswers);
+        } else if (UserAnswer.isPartialMatch(answer, correctAnswer)){
+            partialAnswer++;
+            userAnswersStack.push("partialAnswer");
+            Log.d("", "partialAnswer++" + partialAnswer);
         } else {
             failedAnsweers++;
             userAnswersStack.push("failedAnswer");
