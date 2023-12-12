@@ -7,13 +7,124 @@
     android:layout_height="match_parent"
     tools:context=".MainTextAcrivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/RelativeButtons"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/Back"
+        tools:context=".MainTextAcrivity">
+
+        <RelativeLayout
+            android:id="@+id/Question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginHorizontal="10sp"
+            android:layout_marginTop="10sp"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/QuestionCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="25dp"
+                android:background="@color/Gray"
+                android:fontFamily="@font/exo_2_bold"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/QuestionText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/QuestionCount"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="25dp"
+                android:background="@color/Gray"
+                android:fontFamily="@font/exo_2_bold"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/optionText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/QuestionText"
+                android:layout_alignParentLeft="true"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="35dp"
+                android:background="@color/Gray"
+                android:fontFamily="@font/exo_2_bold"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/Answer1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/optionText"
+                android:layout_alignParentLeft="true"
+                android:layout_marginHorizontal="60dp"
+                android:layout_marginTop="30dp"
+                android:backgroundTint="@color/Blue"
+                android:fontFamily="@font/exo_2_bold"
+                android:text="А"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/Answer2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/optionText"
+                android:layout_alignParentEnd="true"
+                android:layout_marginHorizontal="60dp"
+                android:layout_marginTop="30dp"
+                android:backgroundTint="@color/Blue"
+                android:fontFamily="@font/exo_2_bold"
+                android:text="B"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/Answer4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/Answer2"
+                android:layout_alignParentEnd="true"
+                android:layout_marginHorizontal="60dp"
+                android:layout_marginTop="30dp"
+                android:backgroundTint="@color/Blue"
+                android:fontFamily="@font/exo_2_bold"
+                android:text="D"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/Answer3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/Answer1"
+                android:layout_alignParentLeft="true"
+                android:layout_marginHorizontal="60dp"
+                android:layout_marginTop="30dp"
+                android:backgroundTint="@color/Blue"
+                android:fontFamily="@font/exo_2_bold"
+                android:text="C"
+                android:textColor="@color/white" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
     <RelativeLayout
         android:id="@+id/RelativeButtons"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        android:visibility="visible"
+        android:visibility="invisible"
         >
 
         <Button
@@ -46,123 +157,6 @@
             />
 
     </RelativeLayout>
-
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="575dp"
-        tools:context=".MainTextAcrivity"
-        android:layout_above="@+id/RelativeButtons"
-        >
-
-    <RelativeLayout
-        android:id="@+id/Question"
-        android:layout_width="match_parent"
-        android:layout_height="575dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginHorizontal="10sp"
-        android:layout_marginTop="10sp"
-        android:visibility="visible"
-        >
-        <TextView
-            android:id="@+id/QuestionCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="25dp"
-            android:background="@color/Gray"
-            android:fontFamily="@font/exo_2_bold"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
-
-        <TextView
-            android:id="@+id/QuestionText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/QuestionCount"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="25dp"
-            android:background="@color/Gray"
-            android:fontFamily="@font/exo_2_bold"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
-
-        <TextView
-            android:id="@+id/optionText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/QuestionText"
-            android:layout_alignParentLeft="true"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="35dp"
-            android:background="@color/Gray"
-            android:fontFamily="@font/exo_2_bold"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
-
-        <Button
-            android:id="@+id/Answer1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/optionText"
-            android:layout_alignParentLeft="true"
-            android:layout_marginHorizontal="60dp"
-            android:layout_marginTop="30dp"
-            android:fontFamily="@font/exo_2_bold"
-            android:text="А"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/Blue"
-            />
-
-        <Button
-            android:id="@+id/Answer2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/optionText"
-            android:layout_alignParentEnd="true"
-            android:layout_marginHorizontal="60dp"
-            android:layout_marginTop="30dp"
-            android:fontFamily="@font/exo_2_bold"
-            android:text="B"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/Blue"
-            />
-
-        <Button
-            android:id="@+id/Answer4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/Answer2"
-            android:layout_alignParentEnd="true"
-            android:layout_marginHorizontal="60dp"
-            android:layout_marginTop="30dp"
-            android:fontFamily="@font/exo_2_bold"
-            android:text="D"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/Blue"
-            />
-
-        <Button
-            android:id="@+id/Answer3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/Answer1"
-            android:layout_alignParentLeft="true"
-            android:layout_marginHorizontal="60dp"
-            android:layout_marginTop="30dp"
-            android:fontFamily="@font/exo_2_bold"
-            android:text="C"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/Blue"
-            />
-
-    </RelativeLayout>
-
-    </ScrollView>
 
     <ProgressBar
         android:id="@+id/progressBar"
