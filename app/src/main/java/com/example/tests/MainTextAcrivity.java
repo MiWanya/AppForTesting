@@ -32,6 +32,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import com.example.tests.EmailSender.*;
 
+import org.w3c.dom.Text;
+
 public class MainTextAcrivity extends AppCompatActivity{
     Stack userAnswersStack = new Stack();
     private EmailSender emailSender;
@@ -42,20 +44,14 @@ public class MainTextAcrivity extends AppCompatActivity{
             answer3 = false,
             answer4 = false;
     private Map<Button, Boolean> buttonStates = new HashMap<>();
-    private boolean isClickedButton = false;
-    Random random = new Random();
-    private Button lastClickedButton; // Последняя нажатая кнопка
+    private Button lastClickedButton;
     Button PreviousQuestion, NextQuestion, Answer1, Answer2, Answer3, Answer4;
     int colorGray2, colorBlue, colorGold;
-    int currentQuestionIndex = 48; // Индекс текущего вопроса
+    int currentQuestionIndex = 0;
     List<Question> questionsList = new ArrayList<>();
     int AllQuestions = 49;
     String USERNAME, USERSURNAME, USERNICKNAME, USERCITY;
     int[] array = new int[50];
-    String toAddress;
-    String subject;
-    String body;
-
     ProgressBar progressBar;
     RelativeLayout RelativeButtons, RelativeQuestions;
     @Override
@@ -65,7 +61,7 @@ public class MainTextAcrivity extends AppCompatActivity{
     private void sendEmail() {
         // Your existing sendEmail method code here
         String toAddress = "dommafiatest@outlook.com";
-        String subject = "Данные: " + USERNAME + " " + USERSURNAME + " " + USERCITY + " " + USERNICKNAME;
+        String subject = "Данные: " + USERNAME + " " + USERSURNAME + " " + USERNICKNAME + " " + USERCITY;
         String body = "Ответы: " + "\n Привальные ответы: " + correctAnswers + "\n Частично правильные ответы: " + partialAnswer + "\n Неправльные ответы: " + failedAnsweers;
 
         EmailCallback emailCallback = new EmailCallback() {
@@ -91,12 +87,10 @@ public class MainTextAcrivity extends AppCompatActivity{
                     onEmailFailed();
                 }
             }
-
             @Override
             public void onEmailSent() {
                 // Implement if necessary
             }
-
             @Override
             public void onEmailFailed() {
                 runOnUiThread(new Runnable() {
@@ -107,7 +101,6 @@ public class MainTextAcrivity extends AppCompatActivity{
                 });
             }
         };
-
         emailSender.sendEmail(toAddress, subject, body, emailCallback);
     }
     @Override
@@ -141,6 +134,7 @@ public class MainTextAcrivity extends AppCompatActivity{
         // Получаем текстовые поля
         TextView questionTextView = findViewById(R.id.QuestionText);
         TextView optionTextView = findViewById(R.id.optionText);
+        TextView questionCountTextView = findViewById(R.id.QuestionCount);
 
         // Получаем кнопки
         PreviousQuestion = findViewById(R.id.PreviosQuestion);
@@ -224,10 +218,7 @@ public class MainTextAcrivity extends AppCompatActivity{
         }).execute();
 
         FileDownloadApi fileDownloadApi = RetrofitClient.getClient().create(FileDownloadApi.class);
-        Log.d("FileDownloadApi", "fileDownloadApi succsed");
-
         Call<ResponseBody> call = fileDownloadApi.downloadFile("https://drive.google.com/uc?id=1W669YuIDmEqhplKJrpyl4tuPdWpL3RKL");
-        Log.d("Call<ResponseBody> ", "call = googleDrive");
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -252,10 +243,8 @@ public class MainTextAcrivity extends AppCompatActivity{
                             while ((line = bufferedReader.readLine()) != null) {
 
                                 if (line.startsWith("$ ")) {
-                                    // This is a line with the question text
                                     question = line.substring(2);
                                 } else if (line.startsWith("^ ")) {
-                                    // This is a line with options and correct answers
                                     String content = line.substring(2);
                                     String[] parts = content.split(", ");
 
@@ -269,7 +258,6 @@ public class MainTextAcrivity extends AppCompatActivity{
                                     options.addAll(questionOptions);
                                     correctAnswers.addAll(questionCorrectAnswers);
                                 } else if (line.startsWith("* ")) {
-                                    // This is a line with correct answers for multiple choice questions
                                     String content = line.substring(2);
                                     String[] parts = content.split(",");
 
@@ -331,6 +319,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                                 }
                                 // Устанавливаем текст вариантов ответов
                                 optionTextView.setText(optionsText.toString());
+                                questionCountTextView.setText("Вопрос " + (currentQuestionIndex+1));
                             } else {
                                 // Покажите диалоговое окно
                                 AlertDialog dialog = builder.create();
@@ -374,7 +363,6 @@ public class MainTextAcrivity extends AppCompatActivity{
 
                     Question question = questionsList.get(array[currentQuestionIndex]);
                     questionTextView.setText(question.GetQuestionText());
-
                     StringBuilder optionsText = new StringBuilder();
                     List<String> options = question.getOptions();
                     for (int i = 0; i < options.size(); i++) {
@@ -384,6 +372,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                         }
                     }
                     optionTextView.setText(optionsText.toString());
+                    questionCountTextView.setText("Вопрос " + (currentQuestionIndex+1));
 
                     String lastAnswer = userAnswersStack.pop();
 
@@ -456,6 +445,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                             }
                         }
                         optionTextView.setText(optionsText.toString());
+                        questionCountTextView.setText("Вопрос " + (currentQuestionIndex+1));
                         Log.d("Questions", "Question type: " + type + " Options: " + options);
                     } else {
                         // Покажите диалоговое окно
@@ -498,25 +488,24 @@ public class MainTextAcrivity extends AppCompatActivity{
                             answer3 = false;
                             answer4 = false;
                         }
+
                         // Устанавливаем новую последнюю нажатую кнопку
                         lastClickedButton = (Button) view;
 
                         // Устанавливаем новый цвет для текущей кнопки
                         view.setBackgroundColor(colorGold);
+
                         answer1 = true; // Обновляем глобальную переменную
-                        Log.d(" ", "answer: " + answer1);
                     } else if (type == QuestionType.MULTIPLE_CHOICE) {
                         boolean isClicked = getButtonState((Button) view);
                         if (!isClicked) {
                             view.setBackgroundColor(colorGold);
                             setButtonState((Button) view, true);
                             answer1 = true; // Обновляем глобальную переменную
-                            Log.d("ButtonState", "Changed to gold" + answer1);
                         } else {
                             view.setBackgroundColor(colorBlue);
                             setButtonState((Button) view, false);
                             answer1 = false; // Обновляем глобальную переменную
-                            Log.d("ButtonState", "Changed to blue" + answer1);
                         }
                     }
                     buttonStates.put(Answer1, answer1); // Сохраняем состояние кнопки в buttonStates
@@ -552,19 +541,16 @@ public class MainTextAcrivity extends AppCompatActivity{
                         // Устанавливаем новый цвет для текущей кнопки
                         view.setBackgroundColor(colorGold);
                         answer2 = true; // Обновляем глобальную переменную
-                        Log.d(" ", "answer: " + answer1);
                     } else if (type == QuestionType.MULTIPLE_CHOICE) {
                         boolean isClicked = getButtonState((Button) view);
                         if (!isClicked) {
                             view.setBackgroundColor(colorGold);
                             setButtonState((Button) view, true);
                             answer2 = true; // Обновляем глобальную переменную
-                            Log.d("ButtonState", "Changed to gold" + answer2);
                         } else {
                             view.setBackgroundColor(colorBlue);
                             setButtonState((Button) view, false);
                             answer2 = false; // Обновляем глобальную переменную
-                            Log.d("ButtonState", "Changed to blue" + answer2);
                         }
                     }
                     buttonStates.put(Answer2, answer2); // Сохраняем состояние кнопки в buttonStates
@@ -600,19 +586,16 @@ public class MainTextAcrivity extends AppCompatActivity{
                         // Устанавливаем новый цвет для текущей кнопки
                         view.setBackgroundColor(colorGold);
                         answer3 = true; // Обновляем глобальную переменную
-                        Log.d(" ", "answer: " + answer1);
                     } else if (type == QuestionType.MULTIPLE_CHOICE) {
                         boolean isClicked = getButtonState((Button) view);
                         if (!isClicked) {
                             view.setBackgroundColor(colorGold);
                             setButtonState((Button) view, true);
                             answer3 = true; // Обновляем глобальную переменную
-                            Log.d("ButtonState", "Changed to gold" + answer3);
                         } else {
                             view.setBackgroundColor(colorBlue);
                             setButtonState((Button) view, false);
                             answer3 = false; // Обновляем глобальную переменную
-                            Log.d("ButtonState", "Changed to blue" + answer3);
                         }
                     }
                     buttonStates.put(Answer3, answer3); // Сохраняем состояние кнопки в buttonStates
@@ -648,19 +631,16 @@ public class MainTextAcrivity extends AppCompatActivity{
                         // Устанавливаем новый цвет для текущей кнопки
                         view.setBackgroundColor(colorGold);
                         answer4 = true; // Обновляем глобальную переменную
-                        Log.d(" ", "answer: " + answer4);
                     } else if (type == QuestionType.MULTIPLE_CHOICE) {
                         boolean isClicked = getButtonState((Button) view);
                         if (!isClicked) {
                             view.setBackgroundColor(colorGold);
                             setButtonState((Button) view, true);
                             answer4 = true; // Обновляем глобальную переменную
-                            Log.d("ButtonState", "Changed to gold" + answer4);
                         } else {
                             view.setBackgroundColor(colorBlue);
                             setButtonState((Button) view, false);
                             answer4 = false; // Обновляем глобальную переменную
-                            Log.d("ButtonState", "Changed to blue" + answer4);
                         }
                     }
                     buttonStates.put(Answer4, answer4); // Сохраняем состояние кнопки в buttonStates
@@ -724,17 +704,6 @@ public class MainTextAcrivity extends AppCompatActivity{
             return null;
         }
     }
-
-    // Метод для поиска вопроса по идентификатору
-    private Question getQuestionById(int questionId) {
-        for (Question question : questionsList) {
-            if (question.getId() == questionId) {
-                return question;
-            }
-        }
-        return null;
-    }
-
     private UserAnswer Answer(List<Question> questionsList, QuestionType type){
 
         Question question = questionsList.get(array[currentQuestionIndex]);
@@ -796,7 +765,6 @@ public class MainTextAcrivity extends AppCompatActivity{
 
         Log.d("Stack", "Stack size: " + userAnswersStack.peek() + " " + userAnswersStack.size());
         Log.d("UserAnswer", "User's Answer: " + answer.toString());
-        Log.d("Answers", "Answers" + ans.toString());
         Log.d("CorrectAnswer", "Correct Answer: " + correctAnswer.toString());
         return answer;
     }
@@ -841,16 +809,6 @@ public class MainTextAcrivity extends AppCompatActivity{
             array[index] = array[i];
             array[i] = temp;
         }
-    }
-
-    private void delayedSendEmail() {
-        // Delay for 10 seconds before calling sendEmail
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                sendEmail();
-            }
-        }, 10000); // 10000 milliseconds = 10 seconds
     }
 
 }
