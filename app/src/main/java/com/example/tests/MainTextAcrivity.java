@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -46,7 +47,7 @@ public class MainTextAcrivity extends AppCompatActivity{
     private Button lastClickedButton; // Последняя нажатая кнопка
     Button PreviousQuestion, NextQuestion, Answer1, Answer2, Answer3, Answer4;
     int colorGray2, colorBlue, colorGold;
-    int currentQuestionIndex = 0; // Индекс текущего вопроса
+    int currentQuestionIndex = 48; // Индекс текущего вопроса
     List<Question> questionsList = new ArrayList<>();
     int AllQuestions = 49;
     String USERNAME, USERSURNAME, USERNICKNAME, USERCITY;
@@ -62,8 +63,8 @@ public class MainTextAcrivity extends AppCompatActivity{
         showConfirmationDialog();
     }
     private void sendEmail() {
-        // String toAddress = "operesadin66@gmail.com";
-        String toAddress = "miwanyalv@vk.com";
+        // Your existing sendEmail method code here
+        String toAddress = "dommafiatest@outlook.com";
         String subject = "Данные: " + USERNAME + " " + USERSURNAME + " " + USERCITY + " " + USERNICKNAME;
         String body = "Ответы: " + "\n Привальные ответы: " + correctAnswers + "\n Частично правильные ответы: " + partialAnswer + "\n Неправльные ответы: " + failedAnsweers;
 
@@ -114,7 +115,7 @@ public class MainTextAcrivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_text_acrivity);
 
-        emailSender = new EmailSender("dommafiatest@outlook.com", "ixwbucizshsgzqzi");
+        emailSender = new EmailSender("dommafiatest@outlook.com", "ongtsdpjggyemjqe");
 
         // Создаем массив с числами от 0 до 49
         for (int i = 0; i < array.length; i++) {
@@ -700,7 +701,7 @@ public class MainTextAcrivity extends AppCompatActivity{
 
         @Override
         protected Void doInBackground(Void... voids) {
-            FileDownload.downloadFile("download", new FileDownload.FileDownloadListener() {
+            FileDownload.downloadFile(MainTextAcrivity.this, "download", new FileDownload.FileDownloadListener() {
                 @Override
                 public void onDownloadComplete(ResponseBody responseBody) {
                     // Чтение файла из responseBody и обработка данных
@@ -840,6 +841,16 @@ public class MainTextAcrivity extends AppCompatActivity{
             array[index] = array[i];
             array[i] = temp;
         }
+    }
+
+    private void delayedSendEmail() {
+        // Delay for 10 seconds before calling sendEmail
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendEmail();
+            }
+        }, 10000); // 10000 milliseconds = 10 seconds
     }
 
 }

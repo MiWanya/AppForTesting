@@ -150,7 +150,8 @@ public class EmailSender {
         }
     }
     public interface EmailCallback {
+        void onEmailTaskComplete(boolean success);
         void onEmailSent(boolean success);
-        // ... other methods if any
+        void onEmailFailed();
     }
 }
