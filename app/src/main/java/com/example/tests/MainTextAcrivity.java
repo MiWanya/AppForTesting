@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -36,6 +37,7 @@ import org.w3c.dom.Text;
 
 public class MainTextAcrivity extends AppCompatActivity{
     Stack userAnswersStack = new Stack();
+    SeekBar seekBar;
     private EmailSender emailSender;
     int correctAnswers = 0, failedAnsweers = 0, partialAnswer = 0;
     List<UserAnswer> userAnswersList = new ArrayList<>();
@@ -62,7 +64,7 @@ public class MainTextAcrivity extends AppCompatActivity{
         // Your existing sendEmail method code here
         String toAddress = "dommafiatest@outlook.com";
         String subject = "Данные: " + USERNAME + " " + USERSURNAME + " " + USERNICKNAME + " " + USERCITY;
-        String body = "Ответы: " + "\n Привальные ответы: " + correctAnswers + "\n Частично правильные ответы: " + partialAnswer + "\n Неправльные ответы: " + failedAnsweers;
+        String body = "Ответы: " + "\n Правильные ответы: " + correctAnswers + "\n Частично правильные ответы: " + partialAnswer + "\n Неправльные ответы: " + failedAnsweers;
 
         EmailCallback emailCallback = new EmailCallback() {
             @Override
@@ -77,7 +79,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                                 @Override
                                 public void run() {
                                     Log.i("MainTextActivityTag", "Интерфейс обновляется");
-                                    Intent intent = new Intent(MainTextAcrivity.this, MainActivity.class);
+                                    Intent intent = new Intent(MainTextAcrivity.this, TestCompletedActivity.class);
                                     startActivity(intent);
                                 }
                             });
@@ -143,6 +145,10 @@ public class MainTextAcrivity extends AppCompatActivity{
         Answer2 = findViewById(R.id.Answer2);
         Answer3 = findViewById(R.id.Answer3);
         Answer4 = findViewById(R.id.Answer4);
+
+        seekBar = findViewById(R.id.SeekBar);
+        seekBar.setMax(AllQuestions);
+        seekBar.setEnabled(false);
 
         // Устанавливаем цвет
         PreviousQuestion.setBackgroundColor(colorGray2);
@@ -389,6 +395,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                 // Если есть ещё вопросы для кнопки Продолжить
                 if (currentQuestionIndex < AllQuestions){
                     NextQuestion.setBackgroundColor(colorBlue);
+                    NextQuestion.setText("Продолжить");
                 }
                 // Первый вопрос
                 if (currentQuestionIndex == 0){
@@ -404,6 +411,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                 setButtonState(Answer2, false);
                 setButtonState(Answer3, false);
                 setButtonState(Answer4, false);
+                seekBar.setProgress(currentQuestionIndex);
             }
         });
 
@@ -447,6 +455,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                         optionTextView.setText(optionsText.toString());
                         questionCountTextView.setText("Вопрос " + (currentQuestionIndex+1));
                         Log.d("Questions", "Question type: " + type + " Options: " + options);
+                        Log.i("Seek", "seek bar: " + seekBar.getAlpha() + " " + seekBar.toString());
                     } else {
                         // Покажите диалоговое окно
                         AlertDialog dialog = builder.create();
@@ -456,12 +465,14 @@ public class MainTextAcrivity extends AppCompatActivity{
                 // Последний вопрос
                 if (currentQuestionIndex == AllQuestions){
                     NextQuestion.setBackgroundColor(colorGold);
+                    NextQuestion.setText("Завершить");
                 }
                 // Стандартный цвет кнопок
                 if (currentQuestionIndex > 0) {
                     PreviousQuestion.setBackgroundColor(colorBlue);
                 }
                 setDefaultColors(colorBlue);
+                seekBar.setProgress(currentQuestionIndex);
             }
 
         });
