@@ -113,6 +113,28 @@ public class MainTextAcrivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_text_acrivity);
 
+        List<QuestionItem> questionItems = new ArrayList<>();
+        for (int i = 1; i <= 14; i++) {
+            int initialColor = (i == 0) ? colorGold : colorBlue;
+            questionItems.add(new QuestionItem(i, initialColor));
+        }
+        List<QuestionItem> questionItems1 = new ArrayList<>();
+        for (int i = 15; i <= 28; i++) {
+            int initialColor = (i == 0) ? colorGold : colorBlue;
+            questionItems1.add(new QuestionItem(i, initialColor));
+        }
+        List<QuestionItem> questionItems2 = new ArrayList<>();
+        for (int i = 29; i <= 42; i++) {
+            int initialColor = (i == 0) ? colorGold : colorBlue;
+            questionItems2.add(new QuestionItem(i, initialColor));
+        }
+        List<QuestionItem> questionItems3 = new ArrayList<>();
+        for (int i = 29; i <= 42; i++) {
+            int initialColor = (i == 0) ? colorGold : colorBlue;
+            questionItems3.add(new QuestionItem(i, initialColor));
+        }
+
+
         questionNavigationRecyclerView1 = findViewById(R.id.questionNavigationRecyclerView1);
         questionNavigationRecyclerView2 = findViewById(R.id.questionNavigationRecyclerView2);
         questionNavigationRecyclerView3 = findViewById(R.id.questionNavigationRecyclerView3);
@@ -224,9 +246,6 @@ public class MainTextAcrivity extends AppCompatActivity{
             }
         });
 
-        //
-        // Тут описано что делает каждая кнопка навигации от 15 до 28
-        //
         QuestionNavigationAdapter adapter2 = new QuestionNavigationAdapter(questionNumbers2, questionNumber1 -> {
             Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
             QuestionType type = AnserQuestion.getQuestionType();
@@ -263,9 +282,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                 setDefaultColors(colorBlue, colorGold);
             }
         });
-        //
-        // Тут описано что делает каждая кнопка навигации от 29 до 42
-        //
+
         QuestionNavigationAdapter adapter3 = new QuestionNavigationAdapter(questionNumbers3, questionNumber2 -> {
             Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
             QuestionType type = AnserQuestion.getQuestionType();
@@ -303,9 +320,6 @@ public class MainTextAcrivity extends AppCompatActivity{
             }
         });
 
-        //
-        // Тут описано что делает каждая кнопка навигации от 43 до 50
-        //
         QuestionNavigationAdapter adapter4 = new QuestionNavigationAdapter(questionNumbers4, questionNumber3 -> {
             Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
             QuestionType type = AnserQuestion.getQuestionType();
@@ -583,10 +597,13 @@ public class MainTextAcrivity extends AppCompatActivity{
             public void onClick(View view) {
                 // Возврат к предыдущему вопросу
                 if (currentQuestionIndex > 0) {
+
                     currentQuestionIndex--; // Возвращаемся к предыдущему вопросу
+                    setDefaultColors(colorBlue, colorGold);
 
                     Log.i("QuestionList", "Size: " + questionsList.size());
                     Question question = questionsList.get(array[currentQuestionIndex]);
+
                     questionTextView.setText(question.GetQuestionText());
                     StringBuilder optionsText = new StringBuilder();
                     List<String> options = question.getOptions();
@@ -599,15 +616,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                     optionTextView.setText(optionsText.toString());
                     questionCountTextView.setText("Вопрос " + (currentQuestionIndex+1));
 
-                    String lastAnswer = userAnswersStack.pop();
 
-                    if (lastAnswer == "correctAnswer"){
-                        correctAnswers--;
-                    } else if (lastAnswer == "failedAnswer") {
-                        failedAnsweers--;
-                    } else if (lastAnswer == "partialAnswer"){
-                        partialAnswer--;
-                    }
                 } else {
                     showConfirmationDialog();
                 }
@@ -620,8 +629,8 @@ public class MainTextAcrivity extends AppCompatActivity{
                 if (currentQuestionIndex == 0){
                     PreviousQuestion.setBackgroundColor(colorGray2);
                 }
+                Log.i(" ", " " + AnswersInformation[currentQuestionIndex].GetSelectedOptions());
 
-                setDefaultColors(colorBlue, colorGold);
             }
         });
 
@@ -636,7 +645,6 @@ public class MainTextAcrivity extends AppCompatActivity{
                 setDefaultColors(colorBlue, colorGold);
 
                 currentQuestionIndex++; // Переключаемся на следующий вопрос
-
                 //Переход к следующему вопросу
                     if (currentQuestionIndex <= AllQuestions) {
                         Question question = questionsList.get(array[currentQuestionIndex]);
@@ -671,7 +679,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                 } else {
                     setDefaultColors(colorBlue, colorGold);
                 }
-
+                Log.i(" ", " " + AnswersInformation[currentQuestionIndex-1].GetSelectedOptions());
             }
 
         });
@@ -712,10 +720,16 @@ public class MainTextAcrivity extends AppCompatActivity{
                             view.setBackgroundColor(colorGold);
                             setButtonState((Button) view, true);
                             answer1 = true; // Обновляем глобальную переменную
+                            List<Boolean> selOpt = AnswersInformation[currentQuestionIndex].GetSelectedOptions();
+                            int index = 0;
+                            selOpt.set(index, true);
                         } else {
                             view.setBackgroundColor(colorBlue);
                             setButtonState((Button) view, false);
                             answer1 = false; // Обновляем глобальную переменную
+                            List<Boolean> selOpt = AnswersInformation[currentQuestionIndex].GetSelectedOptions();
+                            int index = 0;
+                            selOpt.set(index, false);
                         }
                     }
                     buttonStates.put(Answer1, answer1); // Сохраняем состояние кнопки в buttonStates
@@ -757,10 +771,16 @@ public class MainTextAcrivity extends AppCompatActivity{
                             view.setBackgroundColor(colorGold);
                             setButtonState((Button) view, true);
                             answer2 = true; // Обновляем глобальную переменную
+                            List<Boolean> selOpt = AnswersInformation[currentQuestionIndex].GetSelectedOptions();
+                            int index = 1;
+                            selOpt.set(index, true);
                         } else {
                             view.setBackgroundColor(colorBlue);
                             setButtonState((Button) view, false);
                             answer2 = false; // Обновляем глобальную переменную
+                            List<Boolean> selOpt = AnswersInformation[currentQuestionIndex].GetSelectedOptions();
+                            int index = 1;
+                            selOpt.set(index, false);
                         }
                     }
                     buttonStates.put(Answer2, answer2); // Сохраняем состояние кнопки в buttonStates
@@ -802,10 +822,16 @@ public class MainTextAcrivity extends AppCompatActivity{
                             view.setBackgroundColor(colorGold);
                             setButtonState((Button) view, true);
                             answer3 = true; // Обновляем глобальную переменную
+                            List<Boolean> selOpt = AnswersInformation[currentQuestionIndex].GetSelectedOptions();
+                            int index = 2;
+                            selOpt.set(index, true);
                         } else {
                             view.setBackgroundColor(colorBlue);
                             setButtonState((Button) view, false);
                             answer3 = false; // Обновляем глобальную переменную
+                            List<Boolean> selOpt = AnswersInformation[currentQuestionIndex].GetSelectedOptions();
+                            int index = 2;
+                            selOpt.set(index, false);
                         }
                     }
                     buttonStates.put(Answer3, answer3); // Сохраняем состояние кнопки в buttonStates
@@ -847,10 +873,16 @@ public class MainTextAcrivity extends AppCompatActivity{
                             view.setBackgroundColor(colorGold);
                             setButtonState((Button) view, true);
                             answer4 = true; // Обновляем глобальную переменную
+                            List<Boolean> selOpt = AnswersInformation[currentQuestionIndex].GetSelectedOptions();
+                            int index = 3;
+                            selOpt.set(index, true);
                         } else {
                             view.setBackgroundColor(colorBlue);
                             setButtonState((Button) view, false);
                             answer4 = false; // Обновляем глобальную переменную
+                            List<Boolean> selOpt = AnswersInformation[currentQuestionIndex].GetSelectedOptions();
+                            int index = 3;
+                            selOpt.set(index, false);
                         }
                     }
                     buttonStates.put(Answer4, answer4); // Сохраняем состояние кнопки в buttonStates
@@ -860,48 +892,48 @@ public class MainTextAcrivity extends AppCompatActivity{
 
     }
 
-    private void setDefaultColors(int color, int color2){
+    private void setDefaultColors(int color, int color2){ // Синий, золотой
         List<Boolean> answers = AnswersInformation[currentQuestionIndex].GetSelectedOptions();
 
         if (answers.get(0).equals(false)){
             Answer1.setBackgroundColor(color);
-            setButtonState(Answer1, true);
-            answer1 = true;
-        }
-        else {
-            Answer1.setBackgroundColor(color2);
             setButtonState(Answer1, false);
             answer1 = false;
         }
+        else {
+            Answer1.setBackgroundColor(color2);
+            setButtonState(Answer1, true);
+            answer1 = true;
+        }
         if (answers.get(1).equals(false)){
             Answer2.setBackgroundColor(color);
-            setButtonState(Answer2, true);
-            answer2 = true;
-        }
-        else {
-            Answer2.setBackgroundColor(color2);
             setButtonState(Answer2, false);
             answer2 = false;
         }
+        else {
+            Answer2.setBackgroundColor(color2);
+            setButtonState(Answer2, true);
+            answer2 = true;
+        }
         if (answers.get(2).equals(false)){
             Answer3.setBackgroundColor(color);
-            setButtonState(Answer3, true);
-            answer3 = true;
-        }
-        else {
-            Answer3.setBackgroundColor(color2);
             setButtonState(Answer3, false);
             answer3 = false;
         }
+        else {
+            Answer3.setBackgroundColor(color2);
+            setButtonState(Answer3, true);
+            answer3 = true;
+        }
         if (answers.get(3).equals(false)){
             Answer4.setBackgroundColor(color);
-            setButtonState(Answer4, true);
-            answer4 = true;
+            setButtonState(Answer4, false);
+            answer4 = false;
         }
         else {
             Answer4.setBackgroundColor(color2);
-            setButtonState(Answer4, false);
-            answer4 = false;
+            setButtonState(Answer4, true);
+            answer4 = true;
         }
     }
 
