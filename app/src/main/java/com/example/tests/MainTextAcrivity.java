@@ -3,6 +3,8 @@ package com.example.tests;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,7 +39,7 @@ import org.w3c.dom.Text;
 
 public class MainTextAcrivity extends AppCompatActivity{
     Stack userAnswersStack = new Stack();
-    SeekBar seekBar;
+    private RecyclerView questionNavigationRecyclerView1, questionNavigationRecyclerView2, questionNavigationRecyclerView3, questionNavigationRecyclerView4;
     private EmailSender emailSender;
     int correctAnswers = 0, failedAnsweers = 0, partialAnswer = 0;
     List<UserAnswer> userAnswersList = new ArrayList<>();
@@ -56,6 +58,7 @@ public class MainTextAcrivity extends AppCompatActivity{
     int[] array = new int[50];
     ProgressBar progressBar;
     RelativeLayout RelativeButtons, RelativeQuestions;
+    QuestionInfo[] AnswersInformation = new QuestionInfo[50];
     @Override
     public void onBackPressed() {
         showConfirmationDialog();
@@ -110,6 +113,28 @@ public class MainTextAcrivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_text_acrivity);
 
+        questionNavigationRecyclerView1 = findViewById(R.id.questionNavigationRecyclerView1);
+        questionNavigationRecyclerView2 = findViewById(R.id.questionNavigationRecyclerView2);
+        questionNavigationRecyclerView3 = findViewById(R.id.questionNavigationRecyclerView3);
+        questionNavigationRecyclerView4 = findViewById(R.id.questionNavigationRecyclerView4);
+
+        List<Integer> questionNumbers1 = new ArrayList<>();
+        for (int i = 1; i <= 14; i++) {
+            questionNumbers1.add(i);
+        }
+        List<Integer> questionNumbers2 = new ArrayList<>();
+        for (int i = 15; i <= 28; i++) {
+            questionNumbers2.add(i);
+        }
+        List<Integer> questionNumbers3 = new ArrayList<>();
+        for (int i = 29; i <= 42; i++) {
+            questionNumbers3.add(i);
+        }
+        List<Integer> questionNumbers4 = new ArrayList<>();
+        for (int i = 43; i <= 50; i++) {
+            questionNumbers4.add(i);
+        }
+
         emailSender = new EmailSender("dommafiatest@outlook.com", "ongtsdpjggyemjqe");
 
         // Создаем массив с числами от 0 до 49
@@ -146,10 +171,6 @@ public class MainTextAcrivity extends AppCompatActivity{
         Answer3 = findViewById(R.id.Answer3);
         Answer4 = findViewById(R.id.Answer4);
 
-        seekBar = findViewById(R.id.SeekBar);
-        seekBar.setMax(AllQuestions);
-        seekBar.setEnabled(false);
-
         // Устанавливаем цвет
         PreviousQuestion.setBackgroundColor(colorGray2);
         NextQuestion.setBackgroundColor(colorBlue);
@@ -161,6 +182,172 @@ public class MainTextAcrivity extends AppCompatActivity{
 
         // Показать ProgressBar при начале загрузки данных
         progressBar.setVisibility(View.VISIBLE);
+
+        QuestionNavigationAdapter adapter1 = new QuestionNavigationAdapter(questionNumbers1, questionNumber -> {
+
+            Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
+            QuestionType type = AnserQuestion.getQuestionType();
+            setDefaultColors(colorBlue, colorGold);
+
+            currentQuestionIndex = questionNumber - 1;
+            Question question = questionsList.get(array[currentQuestionIndex]);
+            questionTextView.setText(question.GetQuestionText());
+
+            StringBuilder optionsText = new StringBuilder();
+            List<String> options = question.getOptions();
+
+            for (int i = 0; i < options.size(); i++) {
+                optionsText.append((i + 1) + ". " + options.get(i));
+                if (i < options.size() - 1) {
+                    optionsText.append("\n");
+                }
+            }
+            optionTextView.setText(optionsText.toString());
+            questionCountTextView.setText("Вопрос " + (currentQuestionIndex+1));
+
+            // Последний вопрос
+            if (currentQuestionIndex == AllQuestions){
+                NextQuestion.setBackgroundColor(colorGold);
+                NextQuestion.setText("Завершить");
+            }
+            // Стандартный цвет кнопок
+            if (currentQuestionIndex > 0) {
+                PreviousQuestion.setBackgroundColor(colorBlue);
+            }
+            if (!AnswersInformation[currentQuestionIndex].isAnswerGiven()){
+                SetBlueColors(colorBlue);
+            } else {
+                setDefaultColors(colorBlue, colorGold);
+            }
+        });
+
+        QuestionNavigationAdapter adapter2 = new QuestionNavigationAdapter(questionNumbers2, questionNumber1 -> {
+            Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
+            QuestionType type = AnserQuestion.getQuestionType();
+            setDefaultColors(colorBlue, colorGold);
+
+            currentQuestionIndex = questionNumber1 - 1;
+            Question question = questionsList.get(array[currentQuestionIndex]);
+            questionTextView.setText(question.GetQuestionText());
+
+            StringBuilder optionsText = new StringBuilder();
+            List<String> options = question.getOptions();
+
+            for (int i = 0; i < options.size(); i++) {
+                optionsText.append((i + 1) + ". " + options.get(i));
+                if (i < options.size() - 1) {
+                    optionsText.append("\n");
+                }
+            }
+            optionTextView.setText(optionsText.toString());
+            questionCountTextView.setText("Вопрос " + (currentQuestionIndex+1));
+
+            // Последний вопрос
+            if (currentQuestionIndex == AllQuestions){
+                NextQuestion.setBackgroundColor(colorGold);
+                NextQuestion.setText("Завершить");
+            }
+            // Стандартный цвет кнопок
+            if (currentQuestionIndex > 0) {
+                PreviousQuestion.setBackgroundColor(colorBlue);
+            }
+            if (!AnswersInformation[currentQuestionIndex].isAnswerGiven()){
+                SetBlueColors(colorBlue);
+            } else {
+                setDefaultColors(colorBlue, colorGold);
+            }
+        });
+
+        QuestionNavigationAdapter adapter3 = new QuestionNavigationAdapter(questionNumbers3, questionNumber2 -> {
+            Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
+            QuestionType type = AnserQuestion.getQuestionType();
+            setDefaultColors(colorBlue, colorGold);
+
+            currentQuestionIndex = questionNumber2 - 1;
+            Question question = questionsList.get(array[currentQuestionIndex]);
+            questionTextView.setText(question.GetQuestionText());
+
+            StringBuilder optionsText = new StringBuilder();
+            List<String> options = question.getOptions();
+
+            for (int i = 0; i < options.size(); i++) {
+                optionsText.append((i + 1) + ". " + options.get(i));
+                if (i < options.size() - 1) {
+                    optionsText.append("\n");
+                }
+            }
+            optionTextView.setText(optionsText.toString());
+            questionCountTextView.setText("Вопрос " + (currentQuestionIndex+1));
+
+            // Последний вопрос
+            if (currentQuestionIndex == AllQuestions){
+                NextQuestion.setBackgroundColor(colorGold);
+                NextQuestion.setText("Завершить");
+            }
+            // Стандартный цвет кнопок
+            if (currentQuestionIndex > 0) {
+                PreviousQuestion.setBackgroundColor(colorBlue);
+            }
+            if (!AnswersInformation[currentQuestionIndex].isAnswerGiven()){
+                SetBlueColors(colorBlue);
+            } else {
+                setDefaultColors(colorBlue, colorGold);
+            }
+        });
+
+        QuestionNavigationAdapter adapter4 = new QuestionNavigationAdapter(questionNumbers4, questionNumber3 -> {
+            Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
+            QuestionType type = AnserQuestion.getQuestionType();
+            setDefaultColors(colorBlue, colorGold);
+
+            currentQuestionIndex = questionNumber3 - 1;
+            Question question = questionsList.get(array[currentQuestionIndex]);
+            questionTextView.setText(question.GetQuestionText());
+
+            StringBuilder optionsText = new StringBuilder();
+            List<String> options = question.getOptions();
+
+            for (int i = 0; i < options.size(); i++) {
+                optionsText.append((i + 1) + ". " + options.get(i));
+                if (i < options.size() - 1) {
+                    optionsText.append("\n");
+                }
+            }
+            optionTextView.setText(optionsText.toString());
+            questionCountTextView.setText("Вопрос " + (currentQuestionIndex+1));
+
+            // Последний вопрос
+            if (currentQuestionIndex == AllQuestions){
+                NextQuestion.setBackgroundColor(colorGold);
+                NextQuestion.setText("Завершить");
+            }
+            // Стандартный цвет кнопок
+            if (currentQuestionIndex > 0) {
+                PreviousQuestion.setBackgroundColor(colorBlue);
+            }
+            if (!AnswersInformation[currentQuestionIndex].isAnswerGiven()){
+                SetBlueColors(colorBlue);
+            } else {
+                setDefaultColors(colorBlue, colorGold);
+            }
+        });
+
+        questionNavigationRecyclerView1.setAdapter(adapter1);
+        questionNavigationRecyclerView2.setAdapter(adapter2);
+        questionNavigationRecyclerView3.setAdapter(adapter3);
+        questionNavigationRecyclerView4.setAdapter(adapter4);
+
+        LinearLayoutManager layoutManager1 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        questionNavigationRecyclerView1.setLayoutManager(layoutManager1);
+
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        questionNavigationRecyclerView2.setLayoutManager(layoutManager2);
+
+        LinearLayoutManager layoutManager3 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        questionNavigationRecyclerView3.setLayoutManager(layoutManager3);
+
+        LinearLayoutManager layoutManager4 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        questionNavigationRecyclerView4.setLayoutManager(layoutManager4);
 
         // Создайте диалоговое окно с вопросом
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -334,6 +521,26 @@ public class MainTextAcrivity extends AppCompatActivity{
 
                             Log.d("Questions count", "Count of questions: " + question.length());
 
+                            for (int i = 0; i <= AllQuestions; i++) {
+                                if (i < questionsList.size()){
+                                    Question question2 = questionsList.get(array[i]);
+                                    boolean given = false;
+                                    List<Boolean> options2 = new ArrayList<>();
+                                    List<String> answers = new ArrayList<>();
+                                    String res = " ";
+
+                                    for (int j = 0; j < 4; j++) {
+                                        options2.add(false);
+                                    }
+
+                                    QuestionInfo result = new QuestionInfo(question2.GetQuestionText(), options2, question2.getCorrectAnswer(), answers, given, res);
+                                    AnswersInformation[i] = result;
+                                }
+                                else {
+                                    Log.d(" ", "i = :" + i + " Text: " + questionsList.size());
+                                }
+                            }
+
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -367,6 +574,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                 if (currentQuestionIndex > 0) {
                     currentQuestionIndex--; // Возвращаемся к предыдущему вопросу
 
+                    Log.i("QuestionList", "Size: " + questionsList.size());
                     Question question = questionsList.get(array[currentQuestionIndex]);
                     questionTextView.setText(question.GetQuestionText());
                     StringBuilder optionsText = new StringBuilder();
@@ -402,16 +610,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                     PreviousQuestion.setBackgroundColor(colorGray2);
                 }
 
-                setDefaultColors(colorBlue);
-                answer1 = false;
-                answer2 = false;
-                answer3 = false;
-                answer4 = false;
-                setButtonState(Answer1, false);
-                setButtonState(Answer2, false);
-                setButtonState(Answer3, false);
-                setButtonState(Answer4, false);
-                seekBar.setProgress(currentQuestionIndex);
+                setDefaultColors(colorBlue, colorGold);
             }
         });
 
@@ -422,22 +621,10 @@ public class MainTextAcrivity extends AppCompatActivity{
                 Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
                 QuestionType type = AnserQuestion.getQuestionType();
 
-                Log.d("QuestionList size", "Size: " + questionsList.size());
-
-                Log.d("Answer ", "Answer1: " + answer1);
                 Answer(questionsList, type);
-                answer1 = false;
-                answer2 = false;
-                answer3 = false;
-                answer4 = false;
-                setButtonState(Answer1, false);
-                setButtonState(Answer2, false);
-                setButtonState(Answer3, false);
-                setButtonState(Answer4, false);
+                setDefaultColors(colorBlue, colorGold);
 
                 currentQuestionIndex++; // Переключаемся на следующий вопрос
-
-                Log.d("", " " + currentQuestionIndex + questionsList.size());
 
                 //Переход к следующему вопросу
                     if (currentQuestionIndex <= AllQuestions) {
@@ -454,13 +641,10 @@ public class MainTextAcrivity extends AppCompatActivity{
                         }
                         optionTextView.setText(optionsText.toString());
                         questionCountTextView.setText("Вопрос " + (currentQuestionIndex+1));
-                        Log.d("Questions", "Question type: " + type + " Options: " + options);
-                        Log.i("Seek", "seek bar: " + seekBar.getAlpha() + " " + seekBar.toString());
                     } else {
                         // Покажите диалоговое окно
                         AlertDialog dialog = builder.create();
                         dialog.show();
-                        Log.d("Result of testing", "Correct answers: " + correctAnswers + " Failed answers: " + failedAnsweers + " Parial answers: " + partialAnswer + " Percent of correct answers: " + Percent());
                     }
                 // Последний вопрос
                 if (currentQuestionIndex == AllQuestions){
@@ -471,8 +655,12 @@ public class MainTextAcrivity extends AppCompatActivity{
                 if (currentQuestionIndex > 0) {
                     PreviousQuestion.setBackgroundColor(colorBlue);
                 }
-                setDefaultColors(colorBlue);
-                seekBar.setProgress(currentQuestionIndex);
+                if (!AnswersInformation[currentQuestionIndex].isAnswerGiven()){
+                    SetBlueColors(colorBlue);
+                } else {
+                    setDefaultColors(colorBlue, colorGold);
+                }
+
             }
 
         });
@@ -661,11 +849,49 @@ public class MainTextAcrivity extends AppCompatActivity{
 
     }
 
-    private void setDefaultColors(int color){
-        Answer1.setBackgroundColor(color);
-        Answer2.setBackgroundColor(color);
-        Answer3.setBackgroundColor(color);
-        Answer4.setBackgroundColor(color);
+    private void setDefaultColors(int color, int color2){
+        List<Boolean> answers = AnswersInformation[currentQuestionIndex].GetSelectedOptions();
+
+        if (answers.get(0).equals(false)){
+            Answer1.setBackgroundColor(color);
+            setButtonState(Answer1, true);
+            answer1 = true;
+        }
+        else {
+            Answer1.setBackgroundColor(color2);
+            setButtonState(Answer1, false);
+            answer1 = false;
+        }
+        if (answers.get(1).equals(false)){
+            Answer2.setBackgroundColor(color);
+            setButtonState(Answer2, true);
+            answer2 = true;
+        }
+        else {
+            Answer2.setBackgroundColor(color2);
+            setButtonState(Answer2, false);
+            answer2 = false;
+        }
+        if (answers.get(2).equals(false)){
+            Answer3.setBackgroundColor(color);
+            setButtonState(Answer3, true);
+            answer3 = true;
+        }
+        else {
+            Answer3.setBackgroundColor(color2);
+            setButtonState(Answer3, false);
+            answer3 = false;
+        }
+        if (answers.get(3).equals(false)){
+            Answer4.setBackgroundColor(color);
+            setButtonState(Answer4, true);
+            answer4 = true;
+        }
+        else {
+            Answer4.setBackgroundColor(color2);
+            setButtonState(Answer4, false);
+            answer4 = false;
+        }
     }
 
     @Override
@@ -722,14 +948,15 @@ public class MainTextAcrivity extends AppCompatActivity{
         List<String> options = question.getOptions();
         String userSelectedOption;
 
+        List<Boolean> ans = new ArrayList<>();
         UserAnswer answer = new UserAnswer();
         UserAnswer correctAnswer = new UserAnswer(question.getCorrectAnswer());
-        List<Boolean> ans = new ArrayList<>();
-
         ans.add(answer1);
         ans.add(answer2);
         ans.add(answer3);
         ans.add(answer4);
+
+        List<String> userAnswers = new ArrayList<>();
 
         if (type == QuestionType.SINGLE_CHOICE) {
             try {
@@ -738,40 +965,49 @@ public class MainTextAcrivity extends AppCompatActivity{
                     if (answ) {
                         String option = question.getOption(i);
                         userSelectedOption = option;
-                        answer.setUserOption(userSelectedOption);
+                        userAnswers.add(userSelectedOption);
                     }
                 }
-            }catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 e.printStackTrace();
             }
         }
-        if (type == QuestionType.MULTIPLE_CHOICE){
+
+        if (type == QuestionType.MULTIPLE_CHOICE) {
             try {
                 for (int i = 0; i < ans.size(); i++) {
                     Boolean answ = ans.get(i);
                     if (answ) {
                         String option = question.getOption(i);
                         userSelectedOption = option;
-                        answer.setUserOption(userSelectedOption);
+                        userAnswers.add(userSelectedOption);
                     }
                 }
-            }catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 e.printStackTrace();
             }
         }
 
+        // Устанавливаем значения в AnswersInformation
+        AnswersInformation[currentQuestionIndex].setSelectedOptions(ans);
+        AnswersInformation[currentQuestionIndex].setAnswer(userAnswers);
+        AnswersInformation[currentQuestionIndex].setAnswerGiven(true); // Устанавливаем флаг, что ответ был дан
+
         if (answer.equals(correctAnswer)){
             correctAnswers++;
             userAnswersStack.push("correctAnswer");
+            AnswersInformation[currentQuestionIndex].setResult("correctAnswer");
             Log.d("", "correctAnswers++" + correctAnswers);
         } else if (UserAnswer.isPartialMatch(answer, correctAnswer)){
             partialAnswer++;
             userAnswersStack.push("partialAnswer");
+            AnswersInformation[currentQuestionIndex].setResult("partialAnswer");
             Log.d("", "partialAnswer++" + partialAnswer);
         } else {
             failedAnsweers++;
             userAnswersStack.push("failedAnswer");
             Log.d("", "failedanswer++" + failedAnsweers);
+            AnswersInformation[currentQuestionIndex].setResult("failedAnswer");
         }
 
         Log.d("Stack", "Stack size: " + userAnswersStack.peek() + " " + userAnswersStack.size());
@@ -820,6 +1056,21 @@ public class MainTextAcrivity extends AppCompatActivity{
             array[index] = array[i];
             array[i] = temp;
         }
+    }
+
+    private void SetBlueColors(int color){
+        Answer1.setBackgroundColor(color);
+        setButtonState(Answer1, false);
+        answer1 = false;
+        Answer2.setBackgroundColor(color);
+        setButtonState(Answer2, false);
+        answer2 = false;
+        Answer3.setBackgroundColor(color);
+        setButtonState(Answer3, false);
+        answer3 = false;
+        Answer4.setBackgroundColor(color);
+        setButtonState(Answer4, false);
+        answer4 = false;
     }
 
 }

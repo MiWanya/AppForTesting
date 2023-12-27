@@ -58,7 +58,6 @@ public class Question {
         }
     }
 
-
     // Установить варианты ответов
     public void setOptions (List<String> options){ //Задать варианты ответов
         this.options = options;

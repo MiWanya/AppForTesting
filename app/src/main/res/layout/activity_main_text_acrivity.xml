@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,10 +8,18 @@
     android:layout_height="match_parent"
     tools:context=".MainTextAcrivity">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
     <ScrollView
+        android:id="@+id/ScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/RelativeButtons"
+        android:layout_above="@+id/questionNavigationRecyclerView1"
         android:layout_alignParentTop="true"
         android:contentDescription="@string/Back"
         tools:context=".MainTextAcrivity">
@@ -121,17 +130,24 @@
     <RelativeLayout
         android:id="@+id/RelativeButtons"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="75dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:visibility="visible"
         >
 
-        <SeekBar
-            android:id="@+id/SeekBar"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/questionRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_above="@+id/PreviosQuestion"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="0.5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+
             />
 
         <Button
@@ -165,14 +181,75 @@
 
     </RelativeLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/questionNavigationRecyclerView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/questionNavigationRecyclerView2"
+        android:layout_alignParentBottom="false"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@color/Gray"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="0.5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/questionNavigationRecyclerView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/questionNavigationRecyclerView3"
+        android:layout_alignParentBottom="false"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@color/Gray"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="0.5dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/questionNavigationRecyclerView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/questionNavigationRecyclerView4"
+        android:layout_alignParentBottom="false"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@color/Gray"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="0.5dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/questionNavigationRecyclerView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/RelativeButtons"
+        android:layout_alignParentBottom="false"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@color/Gray"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="0.5dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        />
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone" />
-
-
-
 
 </RelativeLayout>
