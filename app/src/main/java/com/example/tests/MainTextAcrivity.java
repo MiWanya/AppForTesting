@@ -183,6 +183,9 @@ public class MainTextAcrivity extends AppCompatActivity{
         // Показать ProgressBar при начале загрузки данных
         progressBar.setVisibility(View.VISIBLE);
 
+        //
+        // Тут описано что делает каждая кнопка навигации от 1 до 14
+        //
         QuestionNavigationAdapter adapter1 = new QuestionNavigationAdapter(questionNumbers1, questionNumber -> {
 
             Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
@@ -221,6 +224,9 @@ public class MainTextAcrivity extends AppCompatActivity{
             }
         });
 
+        //
+        // Тут описано что делает каждая кнопка навигации от 15 до 28
+        //
         QuestionNavigationAdapter adapter2 = new QuestionNavigationAdapter(questionNumbers2, questionNumber1 -> {
             Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
             QuestionType type = AnserQuestion.getQuestionType();
@@ -257,7 +263,9 @@ public class MainTextAcrivity extends AppCompatActivity{
                 setDefaultColors(colorBlue, colorGold);
             }
         });
-
+        //
+        // Тут описано что делает каждая кнопка навигации от 29 до 42
+        //
         QuestionNavigationAdapter adapter3 = new QuestionNavigationAdapter(questionNumbers3, questionNumber2 -> {
             Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
             QuestionType type = AnserQuestion.getQuestionType();
@@ -295,6 +303,9 @@ public class MainTextAcrivity extends AppCompatActivity{
             }
         });
 
+        //
+        // Тут описано что делает каждая кнопка навигации от 43 до 50
+        //
         QuestionNavigationAdapter adapter4 = new QuestionNavigationAdapter(questionNumbers4, questionNumber3 -> {
             Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
             QuestionType type = AnserQuestion.getQuestionType();
