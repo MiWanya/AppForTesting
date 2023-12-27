@@ -2,7 +2,7 @@ package com.example.tests;
 
 public class QuestionItem {
     private int questionNumber;
-    private int textColor;
+    private int textColor;  // Добавляем новое поле для цвета текста
 
     public QuestionItem(int questionNumber, int textColor) {
         this.questionNumber = questionNumber;

@@ -50,7 +50,7 @@ public class MainTextAcrivity extends AppCompatActivity{
     private Map<Button, Boolean> buttonStates = new HashMap<>();
     private Button lastClickedButton;
     Button PreviousQuestion, NextQuestion, Answer1, Answer2, Answer3, Answer4;
-    int colorGray2, colorBlue, colorGold;
+    int colorGray2, colorBlue, colorGold, colorBlack;
     int currentQuestionIndex = 0;
     List<Question> questionsList = new ArrayList<>();
     int AllQuestions = 49;
@@ -115,23 +115,23 @@ public class MainTextAcrivity extends AppCompatActivity{
 
         List<QuestionItem> questionItems = new ArrayList<>();
         for (int i = 1; i <= 14; i++) {
-            int initialColor = (i == 0) ? colorGold : colorBlue;
-            questionItems.add(new QuestionItem(i, initialColor));
+            QuestionItem questionItem = new QuestionItem(i, colorGold); // замените colorBlue на ваш цвет
+            questionItems.add(questionItem);
         }
         List<QuestionItem> questionItems1 = new ArrayList<>();
         for (int i = 15; i <= 28; i++) {
-            int initialColor = (i == 0) ? colorGold : colorBlue;
-            questionItems1.add(new QuestionItem(i, initialColor));
+            QuestionItem questionItem = new QuestionItem(i, colorGold); // замените colorBlue на ваш цвет
+            questionItems1.add(questionItem);
         }
         List<QuestionItem> questionItems2 = new ArrayList<>();
         for (int i = 29; i <= 42; i++) {
-            int initialColor = (i == 0) ? colorGold : colorBlue;
-            questionItems2.add(new QuestionItem(i, initialColor));
+            QuestionItem questionItem = new QuestionItem(i, colorGold); // замените colorBlue на ваш цвет
+            questionItems2.add(questionItem);
         }
         List<QuestionItem> questionItems3 = new ArrayList<>();
         for (int i = 29; i <= 42; i++) {
-            int initialColor = (i == 0) ? colorGold : colorBlue;
-            questionItems3.add(new QuestionItem(i, initialColor));
+            QuestionItem questionItem = new QuestionItem(i, colorGold); // замените colorBlue на ваш цвет
+            questionItems3.add(questionItem);
         }
 
 
@@ -179,6 +179,7 @@ public class MainTextAcrivity extends AppCompatActivity{
         colorGray2 = ContextCompat.getColor(this, R.color.Gray2);
         colorBlue = ContextCompat.getColor(this, R.color.Blue);
         colorGold = ContextCompat.getColor(this, R.color.Gold);
+        colorBlack = ContextCompat.getColor(this, R.color.black);
 
         // Получаем текстовые поля
         TextView questionTextView = findViewById(R.id.QuestionText);

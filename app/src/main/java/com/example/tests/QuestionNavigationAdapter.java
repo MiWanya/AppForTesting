@@ -1,5 +1,8 @@
 package com.example.tests;
 
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,5 +70,6 @@ public class QuestionNavigationAdapter extends RecyclerView.Adapter<QuestionNavi
         void onQuestionClick(int questionNumber);
     }
 }
+
 
 
