@@ -16,11 +16,11 @@ import java.util.List;
 
 public class QuestionNavigationAdapter extends RecyclerView.Adapter<QuestionNavigationAdapter.ViewHolder> {
 
-    private List<Integer> questionNumbers;
+    private List<QuestionItem> questionItems;
     private OnQuestionClickListener onQuestionClickListener;
 
-    public QuestionNavigationAdapter(List<Integer> questionNumbers, OnQuestionClickListener onQuestionClickListener) {
-        this.questionNumbers = questionNumbers;
+    public QuestionNavigationAdapter(List<QuestionItem> questionItems, OnQuestionClickListener onQuestionClickListener) {
+        this.questionItems = questionItems;
         this.onQuestionClickListener = onQuestionClickListener;
     }
 
@@ -28,29 +28,23 @@ public class QuestionNavigationAdapter extends RecyclerView.Adapter<QuestionNavi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_question_number, parent, false);
-
-        // Задайте ориентацию горизонтальную для элементов списка
-        LinearLayoutManager layoutManager = new LinearLayoutManager(parent.getContext(), LinearLayoutManager.HORIZONTAL, false);
-        RecyclerView recyclerView = new RecyclerView(parent.getContext());
-        recyclerView.setLayoutManager(layoutManager);
-
-        // Установите фон внутреннего RecyclerView
-        recyclerView.setBackgroundResource(R.drawable.ic_launcher_background);
-
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        int questionNumber = questionNumbers.get(position);
-        holder.bind(questionNumber);
+        QuestionItem questionItem = questionItems.get(position);
 
-        holder.itemView.setOnClickListener(v -> onQuestionClickListener.onQuestionClick(questionNumber));
+        // Устанавливаем цвет текста вопроса
+        holder.questionNumberTextView.setTextColor(questionItem.getTextColor());
+        holder.questionNumberTextView.setText(String.valueOf(questionItem.getQuestionNumber()));
+
+        holder.itemView.setOnClickListener(v -> onQuestionClickListener.onQuestionClick(questionItem));
     }
 
     @Override
     public int getItemCount() {
-        return questionNumbers.size();
+        return questionItems.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -60,14 +54,18 @@ public class QuestionNavigationAdapter extends RecyclerView.Adapter<QuestionNavi
             super(itemView);
             questionNumberTextView = itemView.findViewById(R.id.questionNumberTextView);
         }
-
-        public void bind(int questionNumber) {
-            questionNumberTextView.setText(String.valueOf(questionNumber));
-        }
     }
 
     public interface OnQuestionClickListener {
-        void onQuestionClick(int questionNumber);
+        void onQuestionClick(QuestionItem questionItem);
+    }
+    public void changeColorForItem(int position, int newColor) {
+        QuestionItem questionItem = questionItems.get(position);
+        questionItem.setTextColor(newColor);
+        notifyItemChanged(position);
+    }
+    public List<QuestionItem> getQuestionItems() {
+        return questionItems;
     }
 }
 

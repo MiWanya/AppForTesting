@@ -53,4 +53,25 @@ public class QuestionInfo {
     public String getResult() {
         return Result;
     }
+    public boolean isAnswerCorrect() {
+        // Проверка, если List<String> Answer содержит все элементы из List<String> CorrectAnswer
+        return Answer.containsAll(CorrectAnswer);
+    }
+
+    public boolean isPartialAnswerCorrect() {
+        for (String correct : CorrectAnswer) {
+            if (Answer.contains(correct)) {
+                return true;
+            }
+        }
+
+        // Проверка, если хотя бы один элемент из List<String> Answer присутствует в List<String> CorrectAnswer
+        for (String answer : Answer) {
+            if (CorrectAnswer.contains(answer)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     tools:context=".MainTextAcrivity">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -41,10 +42,10 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="25dp"
-                android:background="@color/Gray"
+                android:background="@color/white"
                 android:fontFamily="@font/exo_2_bold"
-                android:textColor="@color/white"
-                android:textSize="20dp" />
+                android:textColor="@color/black"
+                android:textSize="20dp"/>
 
             <TextView
                 android:id="@+id/QuestionText"
@@ -53,10 +54,10 @@
                 android:layout_below="@+id/QuestionCount"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="25dp"
-                android:background="@color/Gray"
+                android:background="@color/white"
                 android:fontFamily="@font/exo_2_bold"
-                android:textColor="@color/white"
-                android:textSize="20dp" />
+                android:textColor="@color/black"
+                android:textSize="20dp"/>
 
             <TextView
                 android:id="@+id/optionText"
@@ -66,10 +67,10 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="35dp"
-                android:background="@color/Gray"
+                android:background="@color/white"
                 android:fontFamily="@font/exo_2_bold"
-                android:textColor="@color/white"
-                android:textSize="20dp" />
+                android:textColor="@color/black"
+                android:textSize="20dp"/>
 
             <Button
                 android:id="@+id/Answer1"
@@ -81,7 +82,7 @@
                 android:layout_marginTop="30dp"
                 android:backgroundTint="@color/Blue"
                 android:fontFamily="@font/exo_2_bold"
-                android:text="А"
+                android:text="1"
                 android:textColor="@color/white" />
 
             <Button
@@ -94,7 +95,7 @@
                 android:layout_marginTop="30dp"
                 android:backgroundTint="@color/Blue"
                 android:fontFamily="@font/exo_2_bold"
-                android:text="B"
+                android:text="2"
                 android:textColor="@color/white" />
 
             <Button
@@ -107,7 +108,7 @@
                 android:layout_marginTop="30dp"
                 android:backgroundTint="@color/Blue"
                 android:fontFamily="@font/exo_2_bold"
-                android:text="D"
+                android:text="4"
                 android:textColor="@color/white" />
 
             <Button
@@ -120,7 +121,7 @@
                 android:layout_marginTop="30dp"
                 android:backgroundTint="@color/Blue"
                 android:fontFamily="@font/exo_2_bold"
-                android:text="C"
+                android:text="3"
                 android:textColor="@color/white" />
 
         </RelativeLayout>
@@ -133,7 +134,7 @@
         android:layout_height="75dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        android:visibility="visible"
+        android:visibility="invisible"
         >
 
         <androidx.recyclerview.widget.RecyclerView
@@ -169,15 +170,14 @@
             android:id="@+id/NextQuestion"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:fontFamily="@font/exo_2_bold"
-            android:layout_marginHorizontal="25sp"
-            android:layout_marginBottom="10sp"
-            android:text="@string/Continue"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="25sp"
             android:layout_marginTop="10dp"
-            />
+            android:layout_marginBottom="10sp"
+            android:fontFamily="@font/exo_2_bold"
+            android:text="@string/Continue"
+            android:textColor="@color/white" />
 
     </RelativeLayout>
 
@@ -189,12 +189,13 @@
         android:layout_alignParentBottom="false"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:background="@color/Gray"
+        android:background="@color/white"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="0.5dp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:visibility="invisible"
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -205,12 +206,13 @@
         android:layout_alignParentBottom="false"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:background="@color/Gray"
+        android:background="@color/white"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="0.5dp"
         android:layout_marginTop="0dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:visibility="invisible"
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -221,12 +223,13 @@
         android:layout_alignParentBottom="false"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:background="@color/Gray"
+        android:background="@color/white"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="0.5dp"
         android:layout_marginTop="0dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:visibility="invisible"
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -237,12 +240,13 @@
         android:layout_alignParentBottom="false"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:background="@color/Gray"
+        android:background="@color/white"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="0.5dp"
         android:layout_marginTop="0dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:visibility="invisible"
         />
 
     <ProgressBar

@@ -5,6 +5,6 @@
     android:layout_height="25dp"
     android:gravity="center"
     android:textColor="@color/black"
-    android:background="@color/Gray"
+    android:background="@color/white"
     android:fontFamily="@font/exo_2_bold"
     />

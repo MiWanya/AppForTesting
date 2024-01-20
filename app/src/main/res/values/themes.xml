@@ -11,9 +11,12 @@
         <item name="colorSecondaryVariant">@color/Blue</item>
         <item name="colorOnSecondary">@color/Blue</item>
 
+
         <!--<item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item> -->
 
     </style>
 
-    <style name="Theme.Tests" parent="Base.Theme.Tests" />
+    <style
+        name="Theme.Tests" parent="Base.Theme.Tests"
+        />
 </resources>

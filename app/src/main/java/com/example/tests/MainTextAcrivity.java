@@ -2,6 +2,7 @@ package com.example.tests;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,6 +41,10 @@ import org.w3c.dom.Text;
 public class MainTextAcrivity extends AppCompatActivity{
     Stack userAnswersStack = new Stack();
     private RecyclerView questionNavigationRecyclerView1, questionNavigationRecyclerView2, questionNavigationRecyclerView3, questionNavigationRecyclerView4;
+    private QuestionNavigationAdapter adapter1;
+    private QuestionNavigationAdapter adapter4;
+    private QuestionNavigationAdapter adapter2;
+    private QuestionNavigationAdapter adapter3;
     private EmailSender emailSender;
     int correctAnswers = 0, failedAnsweers = 0, partialAnswer = 0;
     List<UserAnswer> userAnswersList = new ArrayList<>();
@@ -59,6 +64,9 @@ public class MainTextAcrivity extends AppCompatActivity{
     ProgressBar progressBar;
     RelativeLayout RelativeButtons, RelativeQuestions;
     QuestionInfo[] AnswersInformation = new QuestionInfo[50];
+    int CorrAnsw = 0;
+    int FailAnsw = 0;
+    int PartAnsw = 0;
     @Override
     public void onBackPressed() {
         showConfirmationDialog();
@@ -66,8 +74,8 @@ public class MainTextAcrivity extends AppCompatActivity{
     private void sendEmail() {
         // Your existing sendEmail method code here
         String toAddress = "dommafiatest@outlook.com";
-        String subject = "Данные: " + USERNAME + " " + USERSURNAME + " " + USERNICKNAME + " " + USERCITY;
-        String body = "Ответы: " + "\n Правильные ответы: " + correctAnswers + "\n Частично правильные ответы: " + partialAnswer + "\n Неправльные ответы: " + failedAnsweers;
+        String subject = "Данные: " + "Имя: " + USERNAME + " Фамилия: " + USERSURNAME + " Никнейм: " + USERNICKNAME + " Город: " + USERCITY;
+        String body = "Ответы: " + "\n Правильные ответы: " + CorrAnsw + "\n Частично правильные ответы: " + PartAnsw + "\n Неправльные ответы: " + FailAnsw;
 
         EmailCallback emailCallback = new EmailCallback() {
             @Override
@@ -129,11 +137,13 @@ public class MainTextAcrivity extends AppCompatActivity{
             questionItems2.add(questionItem);
         }
         List<QuestionItem> questionItems3 = new ArrayList<>();
-        for (int i = 29; i <= 42; i++) {
+        for (int i = 43; i <= 50; i++) {
             QuestionItem questionItem = new QuestionItem(i, colorGold); // замените colorBlue на ваш цвет
             questionItems3.add(questionItem);
+            Log.i(" ", "onCreate: " + i);
         }
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         questionNavigationRecyclerView1 = findViewById(R.id.questionNavigationRecyclerView1);
         questionNavigationRecyclerView2 = findViewById(R.id.questionNavigationRecyclerView2);
@@ -209,13 +219,13 @@ public class MainTextAcrivity extends AppCompatActivity{
         //
         // Тут описано что делает каждая кнопка навигации от 1 до 14
         //
-        QuestionNavigationAdapter adapter1 = new QuestionNavigationAdapter(questionNumbers1, questionNumber -> {
+        adapter1 = new QuestionNavigationAdapter(questionItems, questionNumber -> {
 
             Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
             QuestionType type = AnserQuestion.getQuestionType();
             setDefaultColors(colorBlue, colorGold);
 
-            currentQuestionIndex = questionNumber - 1;
+            currentQuestionIndex = questionNumber.getQuestionNumber()-1;
             Question question = questionsList.get(array[currentQuestionIndex]);
             questionTextView.setText(question.GetQuestionText());
 
@@ -244,15 +254,24 @@ public class MainTextAcrivity extends AppCompatActivity{
                 SetBlueColors(colorBlue);
             } else {
                 setDefaultColors(colorBlue, colorGold);
+            }
+            // Если есть ещё вопросы для кнопки Продолжить
+            if (currentQuestionIndex < AllQuestions){
+                NextQuestion.setBackgroundColor(colorBlue);
+                NextQuestion.setText("Продолжить");
+            }
+            // Первый вопрос
+            if (currentQuestionIndex == 0){
+                PreviousQuestion.setBackgroundColor(colorGray2);
             }
         });
 
-        QuestionNavigationAdapter adapter2 = new QuestionNavigationAdapter(questionNumbers2, questionNumber1 -> {
+        adapter2 = new QuestionNavigationAdapter(questionItems1, questionNumber1 -> {
             Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
             QuestionType type = AnserQuestion.getQuestionType();
             setDefaultColors(colorBlue, colorGold);
 
-            currentQuestionIndex = questionNumber1 - 1;
+            currentQuestionIndex = questionNumber1.getQuestionNumber() - 1;
             Question question = questionsList.get(array[currentQuestionIndex]);
             questionTextView.setText(question.GetQuestionText());
 
@@ -281,15 +300,20 @@ public class MainTextAcrivity extends AppCompatActivity{
                 SetBlueColors(colorBlue);
             } else {
                 setDefaultColors(colorBlue, colorGold);
+            }
+            // Если есть ещё вопросы для кнопки Продолжить
+            if (currentQuestionIndex < AllQuestions){
+                NextQuestion.setBackgroundColor(colorBlue);
+                NextQuestion.setText("Продолжить");
             }
         });
 
-        QuestionNavigationAdapter adapter3 = new QuestionNavigationAdapter(questionNumbers3, questionNumber2 -> {
+        adapter3 = new QuestionNavigationAdapter(questionItems2, questionNumber2 -> {
             Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
             QuestionType type = AnserQuestion.getQuestionType();
             setDefaultColors(colorBlue, colorGold);
 
-            currentQuestionIndex = questionNumber2 - 1;
+            currentQuestionIndex = questionNumber2.getQuestionNumber() - 1;
             Question question = questionsList.get(array[currentQuestionIndex]);
             questionTextView.setText(question.GetQuestionText());
 
@@ -318,15 +342,20 @@ public class MainTextAcrivity extends AppCompatActivity{
                 SetBlueColors(colorBlue);
             } else {
                 setDefaultColors(colorBlue, colorGold);
+            }
+            // Если есть ещё вопросы для кнопки Продолжить
+            if (currentQuestionIndex < AllQuestions){
+                NextQuestion.setBackgroundColor(colorBlue);
+                NextQuestion.setText("Продолжить");
             }
         });
 
-        QuestionNavigationAdapter adapter4 = new QuestionNavigationAdapter(questionNumbers4, questionNumber3 -> {
+        adapter4 = new QuestionNavigationAdapter(questionItems3, questionNumber3 -> {
             Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
             QuestionType type = AnserQuestion.getQuestionType();
             setDefaultColors(colorBlue, colorGold);
 
-            currentQuestionIndex = questionNumber3 - 1;
+            currentQuestionIndex = questionNumber3.getQuestionNumber() - 1;
             Question question = questionsList.get(array[currentQuestionIndex]);
             questionTextView.setText(question.GetQuestionText());
 
@@ -355,6 +384,11 @@ public class MainTextAcrivity extends AppCompatActivity{
                 SetBlueColors(colorBlue);
             } else {
                 setDefaultColors(colorBlue, colorGold);
+            }
+            // Если есть ещё вопросы для кнопки Продолжить
+            if (currentQuestionIndex < AllQuestions){
+                NextQuestion.setBackgroundColor(colorBlue);
+                NextQuestion.setText("Продолжить");
             }
         });
 
@@ -384,9 +418,23 @@ public class MainTextAcrivity extends AppCompatActivity{
 
                 Log.i("Сообщение", "Сообщение еще не отправлено");
 
+                for (int i = 0; i < AnswersInformation.length; i++){
+                    if (AnswersInformation[i].getResult().equals("correctAnswer")){
+                        CorrAnsw++;
+                    } else if (AnswersInformation[i].getResult().equals("partialAnswer")) {
+                        PartAnsw++;
+                    } else {
+                        FailAnsw++;
+                    }
+                }
+
                 progressBar.setVisibility(View.VISIBLE);
                 RelativeButtons.setVisibility(View.GONE);
                 RelativeQuestions.setVisibility(View.GONE);
+                questionNavigationRecyclerView1.setVisibility(View.GONE);
+                questionNavigationRecyclerView2.setVisibility(View.GONE);
+                questionNavigationRecyclerView3.setVisibility(View.GONE);
+                questionNavigationRecyclerView4.setVisibility(View.GONE);
 
                 sendEmail();
 
@@ -567,12 +615,26 @@ public class MainTextAcrivity extends AppCompatActivity{
                                 }
                             }
 
+                            for (int i = 0; i < adapter1.getItemCount(); i++){
+                                adapter1.changeColorForItem(i, colorBlack);
+                                adapter2.changeColorForItem(i, colorBlack);
+                                adapter3.changeColorForItem(i, colorBlack);
+                            }
+                            for (int i = 0; i < adapter4.getItemCount(); i++){
+                                adapter4.changeColorForItem(i, colorBlack);
+                            }
+
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     progressBar.setVisibility(View.GONE);
                                     RelativeQuestions.setVisibility(View.VISIBLE);
                                     RelativeButtons.setVisibility(View.VISIBLE);
+                                    questionNavigationRecyclerView1.setVisibility(View.VISIBLE);
+                                    questionNavigationRecyclerView2.setVisibility(View.VISIBLE);
+                                    questionNavigationRecyclerView3.setVisibility(View.VISIBLE);
+                                    questionNavigationRecyclerView4.setVisibility(View.VISIBLE);
+
                                 }
                             });
 
@@ -641,11 +703,32 @@ public class MainTextAcrivity extends AppCompatActivity{
 
                 Question AnserQuestion = questionsList.get(array[currentQuestionIndex]);
                 QuestionType type = AnserQuestion.getQuestionType();
-
                 Answer(questionsList, type);
                 setDefaultColors(colorBlue, colorGold);
 
+                if (AnswersInformation[currentQuestionIndex].isAnswerGiven()){
+                    if (currentQuestionIndex<14){
+                        adapter1.changeColorForItem(currentQuestionIndex, colorGold);
+                    }
+                    if (currentQuestionIndex < 28 && currentQuestionIndex >= 14){
+                        int newCurr = currentQuestionIndex-14;
+                        adapter2.changeColorForItem(newCurr, colorGold);
+                    }
+                    if (currentQuestionIndex < 42 && currentQuestionIndex >= 28){
+                        int newCurr = currentQuestionIndex-28;
+                        adapter3.changeColorForItem(newCurr, colorGold);
+                    }
+                    if (currentQuestionIndex < 48 && currentQuestionIndex >= 42){
+                        int newCurr = currentQuestionIndex-42;
+                        adapter4.changeColorForItem(newCurr, colorGold);
+                        Log.i(" ", "onClick: " + currentQuestionIndex + " " + newCurr);
+                    } // 6 7
+                    if (currentQuestionIndex == 48){
+                        adapter4.changeColorForItem(6, colorGold);
+                    }
+                }
                 currentQuestionIndex++; // Переключаемся на следующий вопрос
+
                 //Переход к следующему вопросу
                     if (currentQuestionIndex <= AllQuestions) {
                         Question question = questionsList.get(array[currentQuestionIndex]);
@@ -661,6 +744,11 @@ public class MainTextAcrivity extends AppCompatActivity{
                         }
                         optionTextView.setText(optionsText.toString());
                         questionCountTextView.setText("Вопрос " + (currentQuestionIndex+1));
+                        if (!AnswersInformation[currentQuestionIndex].isAnswerGiven()){
+                            SetBlueColors(colorBlue);
+                        } else {
+                            setDefaultColors(colorBlue, colorGold);
+                        }
                     } else {
                         // Покажите диалоговое окно
                         AlertDialog dialog = builder.create();
@@ -675,12 +763,10 @@ public class MainTextAcrivity extends AppCompatActivity{
                 if (currentQuestionIndex > 0) {
                     PreviousQuestion.setBackgroundColor(colorBlue);
                 }
-                if (!AnswersInformation[currentQuestionIndex].isAnswerGiven()){
-                    SetBlueColors(colorBlue);
-                } else {
-                    setDefaultColors(colorBlue, colorGold);
-                }
-                Log.i(" ", " " + AnswersInformation[currentQuestionIndex-1].GetSelectedOptions());
+                Log.i("log", "Res: " + AnswersInformation[currentQuestionIndex-1].getResult());
+                Log.i("log", "Corr: " + AnswersInformation[currentQuestionIndex-1].getCorrectAnswer());
+                Log.i("log", "Answ: " + AnswersInformation[currentQuestionIndex-1].getAnswer());
+
             }
 
         });
@@ -1035,21 +1121,19 @@ public class MainTextAcrivity extends AppCompatActivity{
         // Устанавливаем значения в AnswersInformation
         AnswersInformation[currentQuestionIndex].setSelectedOptions(ans);
         AnswersInformation[currentQuestionIndex].setAnswer(userAnswers);
-        AnswersInformation[currentQuestionIndex].setAnswerGiven(true); // Устанавливаем флаг, что ответ был дан
+        if (!AnswersInformation[currentQuestionIndex].getAnswer().isEmpty()){
+            AnswersInformation[currentQuestionIndex].setAnswerGiven(true); // Устанавливаем флаг, что ответ был дан
+        }
 
-        if (answer.equals(correctAnswer)){
-            correctAnswers++;
-            userAnswersStack.push("correctAnswer");
+        if (AnswersInformation[currentQuestionIndex].isAnswerCorrect()){
+
             AnswersInformation[currentQuestionIndex].setResult("correctAnswer");
+
             Log.d("", "correctAnswers++" + correctAnswers);
-        } else if (UserAnswer.isPartialMatch(answer, correctAnswer)){
-            partialAnswer++;
-            userAnswersStack.push("partialAnswer");
+        } else if (AnswersInformation[currentQuestionIndex].isPartialAnswerCorrect()){
             AnswersInformation[currentQuestionIndex].setResult("partialAnswer");
             Log.d("", "partialAnswer++" + partialAnswer);
         } else {
-            failedAnsweers++;
-            userAnswersStack.push("failedAnswer");
             Log.d("", "failedanswer++" + failedAnsweers);
             AnswersInformation[currentQuestionIndex].setResult("failedAnswer");
         }
