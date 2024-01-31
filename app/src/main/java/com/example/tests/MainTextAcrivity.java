@@ -73,7 +73,7 @@ public class MainTextAcrivity extends AppCompatActivity{
     }
     private void sendEmail() {
         // Your existing sendEmail method code here
-        String toAddress = "dommafiatest@outlook.com";
+        String toAddress = "testappfor@outlook.com";
         String subject = "Данные: " + "Имя: " + USERNAME + " Фамилия: " + USERSURNAME + " Никнейм: " + USERNICKNAME + " Город: " + USERCITY;
         String body = "Ответы: " + "\n Правильные ответы: " + CorrAnsw + "\n Частично правильные ответы: " + PartAnsw + "\n Неправльные ответы: " + FailAnsw;
 
@@ -167,7 +167,7 @@ public class MainTextAcrivity extends AppCompatActivity{
             questionNumbers4.add(i);
         }
 
-        emailSender = new EmailSender("dommafiatest@outlook.com", "ongtsdpjggyemjqe");
+        emailSender = new EmailSender("dommafiatest@outlook.com", "lnkjczfeoagcjpca");
 
         // Создаем массив с числами от 0 до 49
         for (int i = 0; i < array.length; i++) {
@@ -485,7 +485,7 @@ public class MainTextAcrivity extends AppCompatActivity{
         }).execute();
 
         FileDownloadApi fileDownloadApi = RetrofitClient.getClient().create(FileDownloadApi.class);
-        Call<ResponseBody> call = fileDownloadApi.downloadFile("https://drive.google.com/uc?id=1W669YuIDmEqhplKJrpyl4tuPdWpL3RKL");
+        Call<ResponseBody> call = fileDownloadApi.downloadFile("https://drive.usercontent.google.com/u/0/uc?id=12U_EKI1Lc_nb61IP5bgkvOd5hqRMl7xK&export=download");
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
