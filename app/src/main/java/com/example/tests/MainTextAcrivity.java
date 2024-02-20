@@ -73,7 +73,7 @@ public class MainTextAcrivity extends AppCompatActivity{
     }
     private void sendEmail() {
         // Your existing sendEmail method code here
-        String toAddress = "testappfor@outlook.com";
+        String toAddress = "dom-mafia@outlook.com";
         String subject = "Данные: " + "Имя: " + USERNAME + " Фамилия: " + USERSURNAME + " Никнейм: " + USERNICKNAME + " Город: " + USERCITY;
         String body = "Ответы: " + "\n Правильные ответы: " + CorrAnsw + "\n Частично правильные ответы: " + PartAnsw + "\n Неправльные ответы: " + FailAnsw;
 
@@ -167,7 +167,7 @@ public class MainTextAcrivity extends AppCompatActivity{
             questionNumbers4.add(i);
         }
 
-        emailSender = new EmailSender("dommafiatest@outlook.com", "lnkjczfeoagcjpca");
+        emailSender = new EmailSender("dom-mafia@outlook.com", "agcwDgowHHas34f735fgD8643gjfku");
 
         // Создаем массив с числами от 0 до 49
         for (int i = 0; i < array.length; i++) {
@@ -503,7 +503,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                             String question = "";
                             List<String> options = new ArrayList<>();
                             List<String> correctAnswers = new ArrayList<>();
-                            QuestionType questionType = QuestionType.SINGLE_CHOICE;
+                            QuestionType questionType = QuestionType.MULTIPLE_CHOICE;
 
                             String line;
 
@@ -531,14 +531,16 @@ public class MainTextAcrivity extends AppCompatActivity{
                                     List<String> questionCorrectAnswers = new ArrayList<>();
 
                                     for (String part : parts) {
-                                        questionCorrectAnswers.add(part);
+                                        // Удаление пробелов в начале и конце подстроки
+                                        String trimmedPart = part.trim();
+                                        questionCorrectAnswers.add(trimmedPart);
                                     }
 
                                     correctAnswers.addAll(questionCorrectAnswers);
                                     if (parts.length > 1) {
                                         questionType = QuestionType.MULTIPLE_CHOICE;
                                     } else {
-                                        questionType = QuestionType.SINGLE_CHOICE;
+                                        questionType = QuestionType.MULTIPLE_CHOICE;
                                     }
                                 } else if (line.isEmpty()) {
                                     // Empty line indicates the end of a question
@@ -1065,6 +1067,7 @@ public class MainTextAcrivity extends AppCompatActivity{
                     Log.d("FileDownload", "Failed");
                     if (listener != null) {
                         listener.onDownloadFailed();
+                        Log.d("Третий else", "Третий else " + listener.toString());
                     }
                 }
             });

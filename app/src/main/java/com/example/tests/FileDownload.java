@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import okhttp3.ResponseBody;
@@ -35,6 +36,7 @@ public class FileDownload {
                 } else {
                     if (listener != null) {
                         listener.onDownloadFailed();
+                        Log.d("Первый else", "Первый else" + response.code() + " Пробел " + response.toString());
                     }
                 }
             }
@@ -43,6 +45,7 @@ public class FileDownload {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 if (listener != null) {
                     listener.onDownloadFailed();
+                    Log.d("Второй else", "Второй else");
                 }
             }
         });
@@ -70,7 +73,6 @@ public class FileDownload {
 
     public interface FileDownloadListener {
         void onDownloadComplete(ResponseBody responseBody);
-
         void onDownloadFailed();
     }
 }
