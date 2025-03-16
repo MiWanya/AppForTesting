@@ -55,7 +55,7 @@ AppForTesting/
 
 ## 📸 Скриншоты
 
-<div align="center"> <img src="screenshots/screen1.png" alt="Главный экран" width="200"/> <img src="screenshots/screen2.png" alt="Экран теста" width="200"/> </div>
+<div align="center"> <img src="screenshots/screen1.jpg" alt="Главный экран" width="200"/> <img src="screenshots/screen2.jpg" alt="Экран теста" width="200"/> </div>
 
 ### 📫 Связь
 Если у вас есть вопросы или предложения, свяжитесь со мной:
